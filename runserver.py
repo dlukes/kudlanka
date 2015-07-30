@@ -1,4 +1,4 @@
-from housemd import app
+from kudlanka import app
 
 app.run(debug = True, host = "::")
 

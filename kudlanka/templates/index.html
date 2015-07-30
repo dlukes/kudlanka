@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="A manual disambiguation tool for morphologically tagged corpora.">
+    <meta name="author" content="David Lukes">
+    <title>Kudlanka</title>
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/kudlanka.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='vendor/bootstrap/dist/css/bootstrap.css') }}">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+                  data-toggle="collapse" data-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle
+              navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Kudlanka {{ name }}</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email"
+                     class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password"
+                     class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign
+              in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container" ng-app="mandisApp" ng-controller="mandisCtrl">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Věta</h3>
+            </div>
+            <div class="panel-body">
+              <code><span ng-repeat="pos in utt">{[ pos.word ]} </span></code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- First Name: <input type="text" ng-model="firstName"><br>
+      Last Name: <input type="text" ng-model="lastName"><br>
+      <br>
+      Full Name: {[ firstName + " " + lastName ]} -->
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Desambiguace</h3>
+            </div>
+            <div class="panel-body">
+              <div class="list-group-horizontal">
+                <div class="list-group-item" ng-repeat="pos in utt">
+
+                  <div>{[ pos.word ]}</div>
+
+                  <div ng-if="pos.pool.length > 1">
+                    <select ng-model="pos.lemma"
+                            ng-options="idx as lemtag.lemma for (idx, lemtag) in pos.pool">
+                    </select>
+                  </div>
+                  <div ng-if="pos.pool.length == 1">
+                    {[ pos.pool[pos.lemma = 0].lemma ]}
+                  </div>
+
+                  <div ng-if="pos.pool[pos.lemma].tags.length > 1">
+                    <select ng-model="pos.tag"
+                            ng-change="$parent.$parent.helpTag = pos.pool[pos.lemma].tags[pos.tag]"
+                            ng-options="idx as tag for (idx, tag) in pos.pool[pos.lemma].tags">
+                    </select>
+                  </div>
+                  <div ng-if="pos.pool[pos.lemma].tags.length == 1">
+                    {[ pos.pool[pos.lemma].tags[pos.tag = 0] ]}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4" ng-show="helpTag">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Nápověda k tagu {[ helpTag ]}</h3>
+            </div>
+            <div class="panel-body">
+              <ol>
+                <li ng-repeat="(idx, pos) in postag">
+                  <b>{[ pos.label ]}:</b>
+                  <code>{[ helpTag[idx] ]}</code>
+                  <span>{[ pos[helpTag[idx]] ]}</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- <pre>
+      {[ utt | json ]}
+      </pre> -->
+
+    </div>
+
+    <div class="container">
+      <hr>
+      <footer>
+        <p>&copy; <a href="http://korpus.cz">ÚČNK</a>, 2015</p>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename = 'vendor/angular/angular.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'vendor/jquery/dist/jquery.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'vendor/bootstrap/dist/js/bootstrap.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'js/mandisApp.js') }}">
+    </script>
+  </body>
+</html>

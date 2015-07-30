@@ -1,0 +1,34 @@
+/* Bootstrap adjustments */
+
+body {
+  padding-top: 60px;
+}
+
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+.list-group-horizontal {
+  display: table;
+}
+
+.list-group-horizontal .list-group-item {
+  display: table-cell;
+  margin-bottom: 0;
+  margin-left: -4px;
+  margin-right: 0;
+  border-right-width: 0;
+}
+
+.list-group-horizontal .list-group-item:first-child {
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+}
+
+.list-group-horizontal .list-group-item:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-right-width: 1px;
+}
