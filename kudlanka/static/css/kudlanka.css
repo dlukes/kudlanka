@@ -2,6 +2,7 @@
 
 body {
   padding-top: 60px;
+  background: url("../img/groovepaper2.png");
 }
 
 @media (max-width: 979px) {
