@@ -1,0 +1,22 @@
+{
+  "name": "kudlanka",
+  "version": "0.0.0",
+  "authors": [
+    "David Lukes <dafydd.lukes@gmail.com>"
+  ],
+  "description": "A tool for easing manual morphological disambiguation of tagged corpora.",
+  "license": "GPLv3",
+  "homepage": "https://github.com/dlukes/kudlanka",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "kudlanka/static/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.3",
+    "bootstrap": "~3.3.5"
+  }
+}
