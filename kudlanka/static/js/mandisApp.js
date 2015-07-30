@@ -5,8 +5,6 @@ app.config(['$interpolateProvider', function($interpolateProvider) {
 }]);
 
 app.controller("mandisCtrl", function($scope) {
-  $scope.firstName = "John";
-  $scope.lastName = "Doe";
   $scope.utt = [
     {
       word: "já",

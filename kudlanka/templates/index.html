@@ -27,20 +27,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Kudlanka {{ name }}</a>
+          <a class="navbar-brand" href="#">Kudlanka</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <form class="navbar-form navbar-right">
             <div class="form-group">
-              <input type="text" placeholder="Email"
+              <input type="text" placeholder="E-mail"
                      class="form-control">
             </div>
             <div class="form-group">
-              <input type="password" placeholder="Password"
+              <input type="password" placeholder="Heslo"
                      class="form-control">
             </div>
-            <button type="submit" class="btn btn-success">Sign
-              in</button>
+            <button type="submit" class="btn btn-success">
+              Přihlásit se
+            </button>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
@@ -60,11 +61,6 @@
           </div>
         </div>
       </div>
-
-      <!-- First Name: <input type="text" ng-model="firstName"><br>
-      Last Name: <input type="text" ng-model="lastName"><br>
-      <br>
-      Full Name: {[ firstName + " " + lastName ]} -->
 
       <div class="row">
         <div class="col-md-8">
@@ -109,13 +105,13 @@
               <h3 class="panel-title">Nápověda k tagu {[ helpTag ]}</h3>
             </div>
             <div class="panel-body">
-              <ol>
-                <li ng-repeat="(idx, pos) in postag">
-                  <b>{[ pos.label ]}:</b>
-                  <code>{[ helpTag[idx] ]}</code>
-                  <span>{[ pos[helpTag[idx]] ]}</span>
-                </li>
-              </ol>
+              <table class="table table-condensed table-striped">
+                <tr ng-repeat="(idx, pos) in postag">
+                  <td><b>{[ pos.label ]}</b></td>
+                  <td><code>{[ helpTag[idx] ]}</code></td>
+                  <td>{[ pos[helpTag[idx]] ]}</td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
@@ -131,7 +127,7 @@
     <div class="container">
       <hr>
       <footer>
-        <p>&copy; <a href="http://korpus.cz">ÚČNK</a>, 2015</p>
+        <p>&copy; <a href="http://korpus.cz" target="_blank">ÚČNK</a>, 2015</p>
       </footer>
     </div>
 
