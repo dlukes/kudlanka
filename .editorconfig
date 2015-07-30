@@ -1,0 +1,9 @@
+[*]
+indent_style = space
+charset = utf-8
+
+[*.{js,html,css}]
+indent_size = 2
+
+[*.py]
+indent_size = 4
