@@ -69,38 +69,55 @@
               <h3 class="panel-title">Desambiguace</h3>
             </div>
             <div class="panel-body">
-              <div class="list-group-horizontal">
-                <div class="list-group-item" ng-class="{highlight: pos.flag}"
-                     ng-repeat="pos in utt">
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <th>word</th>
+                    <th>lemma</th>
+                    <th>tag</th>
+                    <th>označit</th>
+                    <th>poznámka</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-class="{highlight: pos.flag}"
+                      ng-repeat="pos in utt">
 
-                  <div>{[ pos.word ]}</div>
+                    <td>{[ pos.word ]}</td>
 
-                  <div ng-if="pos.pool.length > 1">
-                    <select ng-model="pos.lemma"
-                            ng-options="idx as lemtag.lemma for (idx, lemtag) in pos.pool">
-                    </select>
-                  </div>
-                  <div ng-if="pos.pool.length == 1">
-                    {[ pos.pool[pos.lemma = 0].lemma ]}
-                  </div>
+                    <td ng-if="pos.pool.length > 1">
+                      <select ng-model="pos.lemma"
+                              ng-options="idx as lemtag.lemma for (idx, lemtag) in pos.pool">
+                      </select>
+                    </td>
+                    <td ng-if="pos.pool.length == 1">
+                      {[ pos.pool[pos.lemma = 0].lemma ]}
+                    </td>
 
-                  <div ng-if="pos.pool[pos.lemma].tags.length > 1">
-                    <select ng-model="pos.tag"
-                            ng-change="$parent.$parent.helpTag = pos.pool[pos.lemma].tags[pos.tag]"
-                            ng-options="idx as tag for (idx, tag) in pos.pool[pos.lemma].tags">
-                    </select>
-                  </div>
-                  <div ng-if="pos.pool[pos.lemma].tags.length == 1">
-                    {[ pos.pool[pos.lemma].tags[pos.tag = 0] ]}
-                  </div>
+                    <td ng-if="pos.pool[pos.lemma].tags.length > 1">
+                      <select ng-model="pos.tag"
+                              ng-change="$parent.$parent.helpTag = pos.pool[pos.lemma].tags[pos.tag]"
+                              ng-options="idx as tag for (idx, tag) in pos.pool[pos.lemma].tags">
+                      </select>
+                    </td>
+                    <td ng-if="pos.pool[pos.lemma].tags.length == 1">
+                      {[ pos.pool[pos.lemma].tags[pos.tag = 0] ]}
+                    </td>
+                    <td ng-if="!pos.pool[pos.lemma].tags.length">
+                      <em>&mdash; vyberte nejprve lemma &mdash;</em>
+                    </td>
 
-                  <input type="checkbox" ng-model="pos.flag">
+                    <td>
+                      <input type="checkbox" ng-model="pos.flag">
+                    </td>
 
-                  <br/>
-
-                  <textarea ng-if="pos.flag" ng-model="pos.note"></textarea>
-                </div>
-              </div>
+                    <td>
+                      <textarea ng-if="pos.flag" ng-model="pos.note"></textarea>
+                    </td>
+              </table>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
