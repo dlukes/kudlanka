@@ -9,3 +9,8 @@
 # Name
 
 Manuální disambiguace → mandis → mantis religiosa → kudlanka
+
+# Requirements
+
+See for webapp, see `requirements.txt`. Scripts under `utils/` may have
+additional dependencies, install as needed.
