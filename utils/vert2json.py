@@ -79,20 +79,25 @@ def parse_argv(argv):
     " recordings in WAV format based on timestamps in corpus vertical.")
     parser.add_argument("vertical", help = "corpus in vertical format")
     parser.add_argument("-o", "--outdir", help = "path to directory where "
-                        "output JSON files will be saved", default = ".")
+                        "output JSON files will be saved", default = ".",
+                        type = str)
+    parser.add_argument("-l", "--limit", help = "process up to N documents and "
+                        "exit", type = int, default = None)
     logging.basicConfig(level = logging.INFO)
     return parser.parse_args(argv)
 
 
 def main(argv = None):
     args = parse_argv(argv)
-    for doc in doc_generator(args.vertical):
+    for i, doc in enumerate(doc_generator(args.vertical)):
         doc = xml2dict(doc)
         sid = doc["sid"]
         out = os.path.join(args.outdir, sid + ".json")
         logging.info("Processed {}.".format(sid))
         with open(out, "w") as fh:
             print(json.dumps(doc, indent = 2), file = fh)
+        if args.limit is not None and i + 1 >= args.limit:
+            break
     return 0
 
 
