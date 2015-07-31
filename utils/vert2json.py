@@ -42,7 +42,7 @@ def valid_xml(doc):
 
 def xml2dict(xml):
     doc = {
-        "id": xml.attrib.get("id", "ID_MISSING"),
+        "sid": xml.attrib.get("id", "ID_MISSING"),
         "oral": xml.attrib.get("oral", "ORAL_MISSING"),
         "segs": []
     }
@@ -88,9 +88,9 @@ def main(argv = None):
     args = parse_argv(argv)
     for doc in doc_generator(args.vertical):
         doc = xml2dict(doc)
-        id = doc["id"]
-        out = os.path.join(args.outdir, id + ".json")
-        logging.info("Processed {}.".format(id))
+        sid = doc["sid"]
+        out = os.path.join(args.outdir, sid + ".json")
+        logging.info("Processed {}.".format(sid))
         with open(out, "w") as fh:
             print(json.dumps(doc, indent = 2), file = fh)
     return 0
