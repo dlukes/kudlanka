@@ -41,17 +41,21 @@ def valid_xml(doc):
 
 
 def xml2dict(xml):
+    id = xml.attrib.get("id", "ID_MISSING")
+    oral = xml.attrib.get("oral", "ORAL_MISSING")
     doc = {
-        "sid": xml.attrib.get("id", "ID_MISSING"),
-        "oral": xml.attrib.get("oral", "ORAL_MISSING"),
+        "id": id,
+        "oral": oral,
         "segs": []
     }
     for sp in xml:
         num = sp.attrib.get("num", "NUM_MISSING")
-        for seg in sp:
+        for i, seg in enumerate(sp):
             utterance = []
             doc["segs"].append({
                 "num": num,
+                "sid": id + "_" + str(i),
+                "oral": oral,
                 "utt": utterance
             })
             for pos in seg.text.strip().split("\n"):
@@ -75,12 +79,9 @@ def xml2dict(xml):
 def parse_argv(argv):
     if argv is None:
         argv = sys.argv[1:]
-    parser = argparse.ArgumentParser(description = "Anonymize spoken corpus"
-    " recordings in WAV format based on timestamps in corpus vertical.")
+    parser = argparse.ArgumentParser(description = "Prepare vertical for import "
+    "into MongoDB for the Kudlanka manual desambiguation webapp.")
     parser.add_argument("vertical", help = "corpus in vertical format")
-    parser.add_argument("-o", "--outdir", help = "path to directory where "
-                        "output JSON files will be saved", default = ".",
-                        type = str)
     parser.add_argument("-l", "--limit", help = "process up to N documents and "
                         "exit", type = int, default = None)
     logging.basicConfig(level = logging.INFO)
@@ -91,11 +92,10 @@ def main(argv = None):
     args = parse_argv(argv)
     for i, doc in enumerate(doc_generator(args.vertical)):
         doc = xml2dict(doc)
-        sid = doc["sid"]
-        out = os.path.join(args.outdir, sid + ".json")
-        logging.info("Processed {}.".format(sid))
-        with open(out, "w") as fh:
-            print(json.dumps(doc, indent = 2), file = fh)
+        id = doc["id"]
+        for seg in doc["segs"]:
+            print(json.dumps(seg))
+        logging.info("Processed {}.".format(id))
         if args.limit is not None and i + 1 >= args.limit:
             break
     return 0
