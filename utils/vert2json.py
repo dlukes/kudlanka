@@ -83,13 +83,11 @@ def parse_argv(argv):
 
 def main(argv = None):
     args = parse_argv(argv)
-    print("[")
     for doc in doc_generator(args.vertical):
         doc = xml2dict(doc)
         logging.info("Processed {}.".format(doc["id"]))
         print(json.dumps(doc, indent = 2))
         print(",")
-    print("]")
     return 0
 
 
