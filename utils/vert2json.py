@@ -61,7 +61,9 @@ def xml2dict(xml):
                 "sid": id + "_" + str(idx),
                 "oral": oral,
                 "utt": utterance,
-                "done": False
+                "done": 0,
+                "assigned": False,
+                "users": []
             })
             idx += 1
             for pos in seg.text.strip().split("\n"):
@@ -104,8 +106,8 @@ def main(argv = None):
         logging.info("Processed {}.".format(id))
         if args.limit is not None and i + 1 >= args.limit:
             break
-    logging.info("You can now import the data with `mongoimport -d database -c "
-                 "collection data.json`.")
+    logging.info("You can now import the data with `sort -R data.json | "
+                 "mongoimport -d database -c collection`.")
     return 0
 
 
