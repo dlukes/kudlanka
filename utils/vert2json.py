@@ -4,10 +4,10 @@ import sys
 import argparse
 
 import json
-import xmltodict
+from lxml import etree
 
 
-def json_doc_generator(vert_file):
+def doc_generator(vert_file):
     """Yield input vertical one doc (as JSON) at a time.
 
     """
@@ -16,7 +16,40 @@ def json_doc_generator(vert_file):
         for line in fh:
             doc += line
             if line.startswith("</doc"):
-                yield xmltodict.parse(doc)
+                yield etree.fromstring(doc)
+                doc = ""
+
+
+def xml2dict(xml):
+    doc = {
+        "id": xml.attrib.get("id", "ID_MISSING"),
+        "oral": xml.attrib.get("oral", "ORAL_MISSING"),
+        "segs": []
+    }
+    for sp in xml:
+        num = sp.attrib.get("num", "NUM_MISSING")
+        for seg in sp:
+            utterance = []
+            doc["segs"].append({
+                "num": num,
+                "utt": utterance
+            })
+            for pos in seg.text.strip().split("\n"):
+                tab_sep = pos.split("\t")
+                word = tab_sep.pop(0)
+                pool = []
+                utterance.append({
+                    "word": word,
+                    "pool": pool
+                })
+                for lemtag in tab_sep:
+                    space_sep = lemtag.split()
+                    lemma, tags = space_sep[0], space_sep[1:]
+                    pool.append({
+                        "lemma": lemma,
+                        "tags": tags
+                    })
+    return doc
 
 
 def parse_argv(argv):
@@ -30,9 +63,8 @@ def parse_argv(argv):
 
 def main(argv = None):
     args = parse_argv(argv)
-    for json_doc in json_doc_generator(args.vertical):
-        print(json.dumps(json_doc, indent = 2))
-        break
+    for doc in doc_generator(args.vertical):
+        print(json.dumps(xml2dict(doc), indent = 2))
     return 0
 
 
