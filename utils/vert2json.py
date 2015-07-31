@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import argparse
 import logging
@@ -77,6 +78,8 @@ def parse_argv(argv):
     parser = argparse.ArgumentParser(description = "Anonymize spoken corpus"
     " recordings in WAV format based on timestamps in corpus vertical.")
     parser.add_argument("vertical", help = "corpus in vertical format")
+    parser.add_argument("-o", "--outdir", help = "path to directory where "
+                        "output JSON files will be saved", default = ".")
     logging.basicConfig(level = logging.INFO)
     return parser.parse_args(argv)
 
@@ -85,9 +88,11 @@ def main(argv = None):
     args = parse_argv(argv)
     for doc in doc_generator(args.vertical):
         doc = xml2dict(doc)
-        logging.info("Processed {}.".format(doc["id"]))
-        print(json.dumps(doc, indent = 2))
-        print(",")
+        id = doc["id"]
+        out = os.path.join(args.outdir, id + ".json")
+        logging.info("Processed {}.".format(id))
+        with open(out, "w") as fh:
+            print(json.dumps(doc, indent = 2), file = fh)
     return 0
 
 
