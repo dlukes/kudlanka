@@ -2,7 +2,9 @@
 
 import sys
 import argparse
+import logging
 
+import re
 import json
 from lxml import etree
 
@@ -16,8 +18,27 @@ def doc_generator(vert_file):
         for line in fh:
             doc += line
             if line.startswith("</doc"):
-                yield etree.fromstring(doc)
-                doc = ""
+                try:
+                    doc = valid_xml(doc)
+                    yield etree.fromstring(doc)
+                except etree.XMLSyntaxError as e:
+                    dump = "__dump__.xml"
+                    with(open(dump, "w")) as fh:
+                        fh.write(doc)
+                    logging.error("An XMLSyntaxError occurred while processing "
+                                  "a document. It has been dumped to {} for "
+                                  "inspection.".format(dump))
+                    logging.error(e)
+                    sys.exit(1)
+                finally:
+                    doc = ""
+
+
+def valid_xml(doc):
+    """Transform vertical to valid XML."""
+    doc = re.sub("&", "&amp;", doc)
+    doc = re.sub("<(\d+)>", "&lt;\\1&gt;", doc)
+    return doc
 
 
 def xml2dict(xml):
@@ -58,13 +79,19 @@ def parse_argv(argv):
     parser = argparse.ArgumentParser(description = "Anonymize spoken corpus"
     " recordings in WAV format based on timestamps in corpus vertical.")
     parser.add_argument("vertical", help = "corpus in vertical format")
+    logging.basicConfig(level = logging.INFO)
     return parser.parse_args(argv)
 
 
 def main(argv = None):
     args = parse_argv(argv)
+    print("[")
     for doc in doc_generator(args.vertical):
-        print(json.dumps(xml2dict(doc), indent = 2))
+        doc = xml2dict(doc)
+        logging.info("Processed {}.".format(doc["id"]))
+        print(json.dumps(doc, indent = 2))
+        print(",")
+    print("]")
     return 0
 
 
