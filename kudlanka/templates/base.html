@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="A manual disambiguation tool for morphologically tagged corpora.">
+    <meta name="author" content="David Lukes">
+    <title>Kudlanka</title>
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/kudlanka.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='vendor/bootstrap/dist/css/bootstrap.css') }}">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+                  data-toggle="collapse" data-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle
+              navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Kudlanka</a>
+        </div>
+        {% if current_user.is_authenticated() %}
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="/logout">Odhlásit se</a>
+            </li>
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <div class="container">
+      <footer>
+        <p>&copy; <a href="http://korpus.cz" target="_blank">ÚČNK</a>, 2015</p>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename = 'vendor/angular/angular.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'vendor/jquery/dist/jquery.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'vendor/bootstrap/dist/js/bootstrap.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename = 'js/mandisApp.js') }}">
+    </script>
+  </body>
+</html>
