@@ -98,6 +98,8 @@ def main(argv = None):
         logging.info("Processed {}.".format(id))
         if args.limit is not None and i + 1 >= args.limit:
             break
+    logging.info("You can now import the data with `mongoimport -d database -c "
+                 "collection data.json`.")
     return 0
 
 
