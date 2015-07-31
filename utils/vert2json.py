@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pdb
+
 import os
 import sys
 import argparse
@@ -41,6 +43,8 @@ def valid_xml(doc):
 
 
 def xml2dict(xml):
+    # a global index counter for all seg elements in xml; incremented below
+    idx = 0
     id = xml.attrib.get("id", "ID_MISSING")
     oral = xml.attrib.get("oral", "ORAL_MISSING")
     doc = {
@@ -50,14 +54,16 @@ def xml2dict(xml):
     }
     for sp in xml:
         num = sp.attrib.get("num", "NUM_MISSING")
-        for i, seg in enumerate(sp):
+        for seg in sp:
             utterance = []
             doc["segs"].append({
                 "num": num,
-                "sid": id + "_" + str(i),
+                "sid": id + "_" + str(idx),
                 "oral": oral,
-                "utt": utterance
+                "utt": utterance,
+                "done": False
             })
+            idx += 1
             for pos in seg.text.strip().split("\n"):
                 tab_sep = pos.split("\t")
                 word = tab_sep.pop(0)
