@@ -70,7 +70,8 @@
             </div>
             <div class="panel-body">
               <div class="list-group-horizontal">
-                <div class="list-group-item" ng-repeat="pos in utt">
+                <div class="list-group-item" ng-class="{highlight: pos.flag}"
+                     ng-repeat="pos in utt">
 
                   <div>{[ pos.word ]}</div>
 
@@ -93,6 +94,11 @@
                     {[ pos.pool[pos.lemma].tags[pos.tag = 0] ]}
                   </div>
 
+                  <input type="checkbox" ng-model="pos.flag">
+
+                  <br/>
+
+                  <textarea ng-if="pos.flag" ng-model="pos.note"></textarea>
                 </div>
               </div>
             </div>
