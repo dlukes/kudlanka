@@ -10,9 +10,7 @@ from lxml import etree
 
 
 def doc_generator(vert_file):
-    """Yield input vertical one doc (as JSON) at a time.
-
-    """
+    """Yield input vertical one doc (as JSON) at a time."""
     with open(vert_file) as fh:
         doc = ""
         for line in fh:
