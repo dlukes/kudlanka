@@ -19,11 +19,19 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
     });
 
   $scope.firstKey = function(obj) {
-    for (var k in obj) return k;
+    if (obj !== null && typeof obj == "object") {
+      for (var k in obj) return k;
+    } else {
+      return undefined;
+    }
   };
 
   $scope.numOfKeys = function(obj) {
-    return Object.keys(obj).length;
+    if (obj !== null && typeof obj == "object") {
+      return Object.keys(obj).length;
+    } else {
+      return undefined;
+    }
   };
 
   $scope.postag = [
