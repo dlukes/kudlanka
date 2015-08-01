@@ -11,7 +11,9 @@ from wtforms import TextField, PasswordField, SubmitField, BooleanField
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.config["SECRET_KEY"] = "super secret"
+app.config["SECRET_KEY"] = "testing"
+app.config["SECURITY_PASSWORD_HASH"] = "pbkdf2_sha512"
+app.config["SECURITY_PASSWORD_SALT"] = "testing"
 app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
@@ -33,8 +35,8 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length = 255)
     active = db.BooleanField(default = True)
     roles = db.ListField(db.ReferenceField(Role), default = [])
-    assigned = db.StringField()
-    segs = db.ListField(db.StringField())
+    assigned = db.StringField(default = None)
+    segs = db.ListField(db.StringField(), default = [])
 
 
 ## Data storage
@@ -81,6 +83,12 @@ class KudlankaLogin(LoginForm):
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore, login_form = KudlankaLogin)
+
+
+@app.before_first_request
+def create_user():
+        user_datastore.create_user(email="testing", password="testing")
+
 
 # Routes
 
