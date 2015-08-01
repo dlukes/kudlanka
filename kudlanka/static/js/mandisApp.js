@@ -15,8 +15,17 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   $http.get($scope.api + request).
     success(function(data) {
       $scope.utt = data.utt;
+      $scope.user = data.user;
       $location.path("/edit/" + data.sid + "/");
     });
+
+  $scope.firstKey = function(obj) {
+    for (var k in obj) return k;
+  };
+
+  $scope.numOfKeys = function(obj) {
+    return Object.keys(obj).length;
+  };
 
   $scope.postag = [
       {

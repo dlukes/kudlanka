@@ -61,6 +61,7 @@ class Seg(db.Document):         # DynamicDocument
     def to_mongo(self, *args, **kwargs):
         mongo = super(Seg, self).to_mongo(*args, **kwargs)
         mongo["_id"] = str(mongo["_id"])
+        mongo["user"] = session["user_id"]
         return mongo
 
 
@@ -132,6 +133,10 @@ class SegSid(Resource):
         uid = session["user_id"]
         seg = Seg.objects(sid = sid).first()
         return seg.to_mongo()
+
+    def post(self, sid):
+        # the user can post a seg only if it's currently assigned to them
+        pass
 
 
 class SegAssign(Resource):

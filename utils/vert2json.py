@@ -43,6 +43,17 @@ def valid_xml(doc):
 
 
 def xml2dict(xml):
+
+    def nonamb_pos(tab_sep):
+        if len(tab_sep) > 1:
+            # more than one lemma
+            return False
+        elif len(tab_sep[0].split()) > 2:
+            # more than one tag for (unique) lemma
+            return False
+        else:
+            return True
+
     # a global index counter for all seg elements in xml; incremented below
     idx = 0
     id = xml.attrib.get("id", "ID_MISSING")
@@ -69,18 +80,23 @@ def xml2dict(xml):
             for pos in seg.text.strip().split("\n"):
                 tab_sep = pos.split("\t")
                 word = tab_sep.pop(0)
-                pool = []
-                utterance.append({
-                    "word": word,
-                    "pool": pool
-                })
-                for lemtag in tab_sep:
-                    space_sep = lemtag.split()
-                    lemma, tags = space_sep[0], space_sep[1:]
-                    pool.append({
+                if nonamb_pos(tab_sep):
+                    lemma, tag = tab_sep[0].split()
+                    utterance.append({
+                        "word": word,
                         "lemma": lemma,
-                        "tags": tags
+                        "tag": tag
                     })
+                else:
+                    pool = {}
+                    utterance.append({
+                        "word": word,
+                        "pool": pool
+                    })
+                    for lemtag in tab_sep:
+                        space_sep = lemtag.split()
+                        lemma, tags = space_sep[0], space_sep[1:]
+                        pool[lemma] = tags
     return doc
 
 
