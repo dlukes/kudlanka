@@ -6,16 +6,15 @@ app.config(function($interpolateProvider, $locationProvider) {
 });
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
-  $scope.api = "/api";
+  var api = "/api";
   var sid = $location.path().split("/");
   // flask ensures a trailing slash, so the sid is always second to last when
   // splitting on "/":
   sid = sid[sid.length - 2];
   var request = sid == "edit" ? "/assign/0" : "/sid/" + sid;
-  $http.get($scope.api + request).
+  $http.get(api + request).
     success(function(data) {
       $scope.utt = data.utt;
-      $scope.user = data.user;
       $location.path("/edit/" + data.sid + "/");
     });
 
