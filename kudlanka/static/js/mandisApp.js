@@ -15,6 +15,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   $http.get(api + request).
     success(function(data) {
       $scope.utt = data.utt;
+      $scope.messages = data.messages;
       $location.path("/edit/" + data.sid + "/");
     });
 

@@ -61,6 +61,15 @@ class Seg(db.Document):         # DynamicDocument
     def to_mongo(self, *args, **kwargs):
         mongo = super(Seg, self).to_mongo(*args, **kwargs)
         mongo["_id"] = str(mongo["_id"])
+        # for debugging mandisApp flash messages
+        # mongo["messages"] = [{
+        #     "type": "danger",
+        #     "content": "Nastala chyba."
+        # },
+        # {
+        #     "type": "danger",
+        #     "content": "Nastala chyba."
+        # }]
         return mongo
 
 
