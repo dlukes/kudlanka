@@ -1,55 +1,22 @@
 var app = angular.module("mandisApp", []);
-app.config(['$interpolateProvider', function($interpolateProvider) {
+app.config(function($interpolateProvider, $locationProvider) {
   $interpolateProvider.startSymbol('{[');
   $interpolateProvider.endSymbol(']}');
-}]);
+  $locationProvider.html5Mode(true);
+});
 
-app.controller("mandisCtrl", function($scope) {
-  $scope.utt = [
-    {
-      word: "já",
-      pool: [
-        {
-          lemma: "já",
-          tags: ["PPNS4--3-------", "VB-S---3P-AA---"]
-        }
-      ]
-    },
-
-    {
-      word: "ti",
-      pool: [
-        {
-          lemma: "ty",
-          tags: ["PPNS4--3-------"]
-        },
-        {
-          lemma: "ten",
-          tags: ["PPNS4--3-------", "VB-S---3P-AA---"]
-        }
-      ]
-    },
-
-    {
-      word: "nevim",
-      pool: [
-        {
-          lemma: "nevědět",
-          tags: ["PPNS4--3-------", "VB-S---3P-AA---", "TT-------------"]
-        }
-      ]
-    },
-
-    {
-      word: "..",
-      pool: [
-        {
-          lemma: "..",
-          tags: ["Z:-------------"]
-        }
-      ]
-    }
-  ];
+app.controller("mandisCtrl", function($scope, $http, $location) {
+  $scope.api = "/api";
+  var sid = $location.path().split("/");
+  // flask ensures a trailing slash, so the sid is always second to last when
+  // splitting on "/":
+  sid = sid[sid.length - 2];
+  var request = sid == "edit" ? "/assign/0" : "/sid/" + sid;
+  $http.get($scope.api + request).
+    success(function(data) {
+      $scope.utt = data.utt;
+      $location.path("/edit/" + data.sid + "/");
+    });
 
   $scope.postag = [
       {

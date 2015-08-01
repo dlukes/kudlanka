@@ -56,6 +56,11 @@ class Seg(db.Document):         # DynamicDocument
     users = db.ListField(required = True)
     utt = db.ListField(required = True)
 
+    def to_mongo(self, *args, **kwargs):
+        mongo = super(Seg, self).to_mongo(*args, **kwargs)
+        mongo["_id"] = str(mongo["_id"])
+        return mongo
+
 
 segs = []
 @app.before_first_request
@@ -88,16 +93,25 @@ def root():
     return redirect(url_for("list"))
 
 
-@app.route("/list")
+@app.route("/list/")
 @login_required
 def list():
     return "Seznam promluv"
 
 
-@app.route("/edit")
+@app.route("/edit/")
+@app.route("/edit/<string:sid>/")
 @login_required
-def edit():
+def edit(sid = None):
     return render_template("edit.html")
+
+
+@app.route("/debug/")
+def debug():
+    if app.config["DEBUG"]:
+        assert False
+    else:
+        pass
 
 
 ## API
@@ -105,17 +119,28 @@ def edit():
 api = Api(app, decorators = [login_required])
 
 
-class SegApi(Resource):
+class SegSid(Resource):
     def get(self, sid):
-        if sid == "random":
-            seg = Seg.objects(done = 0,
-                              assigned = False,
-                              users__nin = session["user_id"]).first()
+        uid = session["user_id"]
+        seg = Seg.objects(sid = sid).first()
+        return seg.to_mongo()
+
+
+class SegAssign(Resource):
+    def get(self, done):
+        uid = session["user_id"]
+        user = User.objects(id = uid).first()
+        if user.assigned:
+            seg = Seg.objects(sid = user.assigned).first()
+            return seg.to_mongo()
         else:
-            seg = Seg.objects(sid = sid).first()
-        seg = seg.to_mongo()
-        seg["_id"] = str(seg["_id"])
-        return seg
+            seg = Seg.objects(done = done,
+                              assigned = False,
+                              users__nin = uid).first()
+            seg.modify(assigned = True, add_to_set__users = uid)
+            user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
+            return seg.to_mongo()
 
 
-api.add_resource(SegApi, "/api/seg/<string:sid>")
+api.add_resource(SegSid, "/api/sid/<string:sid>/")
+api.add_resource(SegAssign, "/api/assign/<int:done>/")
