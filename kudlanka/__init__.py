@@ -183,9 +183,13 @@ class SegSid(Resource):
                 "s SID {} v databázi.")
     miss_l_err = "Na {}. vkládané pozici prosím vyberte lemma."
     miss_t_err = "Na {}. vkládané pozici prosím vyberte tag."
+    seg_err = "Segment s SID {} neexistuje."
 
     def get(self, sid):
         seg = Seg.objects(sid = sid).first()
+        if seg is None:
+            abort(400,
+                  messages = [["danger", SegSid.seg_err.format(sid)]])
         return seg.to_mongo()
 
     def post(self, sid):

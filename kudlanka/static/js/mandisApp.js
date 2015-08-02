@@ -7,14 +7,21 @@ app.config(function($interpolateProvider, $locationProvider) {
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "/api";
+  var sonda, prev, next;
 
   // get utterance from API either by sid or by "random" assignment (as
   // specified by API call in request)
   function getUtt(request) {
     $http.get(api + request).
       success(function(data) {
+        $scope.num = data.num;
         $scope.utt = data.utt;
         $scope.sid = data.sid;
+        var sonda_index = data.sid.split("_");
+        sonda = sonda_index[0];
+        prev = next = parseInt(sonda_index[1]);
+        $scope.prev = [];
+        $scope.next = [];
         $location.path("/edit/" + data.sid + "/");
       }).
       error(function(data) {
@@ -22,12 +29,27 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       });
   }
 
-  var sid = $location.path().split("/");
-  // flask ensures a trailing slash, so the sid is always second to last when
-  // splitting on "/":
-  sid = sid[sid.length - 2];
-  var request = sid == "edit" ? "/assign/0/" : "/sid/" + sid;
-  getUtt(request);
+  $scope.getPrev = function() {
+    $http.get(api + "/sid/" + sonda + "_" + --prev + "/").
+      success(function(data) {
+        $scope.prev.unshift({utt: data.utt, num: data.num});
+        $scope.messages = data.messages;
+      }).
+      error(function(data) {
+        $scope.messages = data.messages;
+      });
+  };
+
+  $scope.getNext = function() {
+    $http.get(api + "/sid/" + sonda + "_" + ++next + "/").
+      success(function(data) {
+        $scope.next.push({utt: data.utt, num: data.num});
+        $scope.messages = data.messages;
+      }).
+      error(function(data) {
+        $scope.messages = data.messages;
+      });
+  };
 
   $scope.submitUtt = function(done) {
     $http.post(api + "/sid/" + $scope.sid + "/", $scope.utt).
@@ -39,6 +61,13 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.messages = data.messages;
       });
   };
+
+  var sid = $location.path().split("/");
+  // flask ensures a trailing slash, so the sid is always second to last when
+  // splitting on "/":
+  sid = sid[sid.length - 2];
+  var request = sid == "edit" ? "/assign/0/" : "/sid/" + sid;
+  getUtt(request);
 
   // scroll to top whenever a new message is added
   $scope.$watch("messages", function() {
