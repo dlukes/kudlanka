@@ -79,13 +79,14 @@ class Seg(db.Document):         # DynamicDocument
         "collection": "segs",
         "indexes": [
             {"fields": ["sid"], "unique": True},
-            {"fields": ["assigned", "users"]}
+            {"fields": ["assigned", "ambiguous", "users"]}
         ]
     }
     sid = db.StringField(max_length = 10, required = True)
     oral = db.StringField(max_length = 10, required = True)
     num = db.StringField(max_length = 10, required = True)
     assigned = db.StringField(required = True)
+    ambiguous = db.StringField(required = True)
     users = db.ListField(required = True)
     utt = db.ListField(required = True)
 
@@ -254,7 +255,8 @@ class SegAssign(Resource):
             seg = Seg.objects(sid = user.assigned).first()
             return seg.to_mongo()
         else:
-            seg = Seg.objects(assigned = None,
+            seg = Seg.objects(assigned = "",
+                              ambiguous = True,
                               users__size = done,
                               users__nin = [uid]).first()
             try:

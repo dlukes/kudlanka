@@ -67,14 +67,16 @@ def xml2dict(xml):
         num = sp.attrib.get("num", "NUM_MISSING")
         for seg in sp:
             utterance = []
-            doc["segs"].append({
+            seg_dict = {
                 "num": num,
                 "sid": id + "_" + str(idx),
                 "oral": oral,
                 "utt": utterance,
-                "assigned": None,
-                "users": []
-            })
+                "assigned": "",
+                "users": [],
+                "ambiguous": False
+            }
+            doc["segs"].append(seg_dict)
             idx += 1
             for pos in seg.text.strip().split("\n"):
                 tab_sep = pos.split("\t")
@@ -87,6 +89,7 @@ def xml2dict(xml):
                         "tag": tag
                     })
                 else:
+                    seg_dict["ambiguous"] = True
                     pool = {}
                     utterance.append({
                         "word": word,
