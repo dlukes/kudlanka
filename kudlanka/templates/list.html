@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Zpracované segmenty</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>ID</th><th>segment</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for seg in segs %}
+              <tr>
+                <td><a href="/edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
+                <td>{{ seg.utt }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

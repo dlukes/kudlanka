@@ -139,17 +139,24 @@ def create_user():
 @app.route("/")
 @login_required
 def root():
-    return redirect(url_for("list"))
+    return redirect(url_for("edit"))
 
 
 @app.route("/list/")
 @login_required
 def list():
-    return "Seznam promluv"
+    uid = session["user_id"]
+    user = User.objects(id = uid).first()
+    segs = []
+    for seg in Seg.objects(sid__in = user.segs):
+        utt = " ".join(pos["word"] for pos in seg.utt)
+        segs.append(dict(sid = seg.sid, utt = utt))
+    return render_template("list.html", segs = segs)
 
 
 @app.route("/edit/")
 @app.route("/edit/<string:sid>/")
+# the sid is handled client-side by angular
 @login_required
 def edit(sid = None):
     return render_template("edit.html")
