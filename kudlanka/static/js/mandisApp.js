@@ -26,14 +26,14 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   // flask ensures a trailing slash, so the sid is always second to last when
   // splitting on "/":
   sid = sid[sid.length - 2];
-  var request = sid == "edit" ? "/assign/0" : "/sid/" + sid;
+  var request = sid == "edit" ? "/assign/0/" : "/sid/" + sid;
   getUtt(request);
 
-  $scope.submitUtt = function() {
+  $scope.submitUtt = function(done) {
     $http.post(api + "/sid/" + $scope.sid + "/", $scope.utt).
       success(function(data) {
         $scope.messages = null;
-        getUtt("/assign/0");
+        getUtt("/assign/" + done + "/");
       }).
       error(function(data) {
         $scope.messages = data.messages;

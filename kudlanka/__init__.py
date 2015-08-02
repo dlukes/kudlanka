@@ -19,6 +19,8 @@ app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
 
+app.config["MAX_DISAMB_PASSES"] = 2
+
 # Utility functions
 
 
@@ -227,11 +229,21 @@ class SegSid(Resource):
                                                           sid)]])
         seg.modify(utt = seg["utt"], inc__done = 1, assigned = False)
         user.modify(assigned = None)
+        print("POST completed.")
         return {}, 201
 
 
 class SegAssign(Resource):
+    done_err = "Pro každý segment požadujeme max. {} hodnocení."
+    noseg_err = ("V tuto chvíli pro vás není volný žádný segment s celkovým "
+                 "počtem hodnocení {}.")
+
     def get(self, done):
+        """Assign a segment which has already been disambiguated done times."""
+        max_done = app.config["MAX_DISAMB_PASSES"]
+        if done >= max_done:
+            abort(403, messages = [["danger",
+                                    SegAssign.done_err.format(max_done)]])
         uid = session["user_id"]
         user = User.objects(id = uid).first()
         if user.assigned:
@@ -241,8 +253,14 @@ class SegAssign(Resource):
             seg = Seg.objects(done = done,
                               assigned = False,
                               users__nin = uid).first()
-            seg.modify(assigned = True, add_to_set__users = uid)
-            user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
+            try:
+                seg.modify(assigned = True, add_to_set__users = uid)
+                user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
+            except AttributeError:
+                # seg is None
+                abort(400,
+                      messages = [["danger",
+                                   SegAssign.noseg_err.format(done)]])
             return seg.to_mongo()
 
 
