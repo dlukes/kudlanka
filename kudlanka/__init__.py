@@ -185,7 +185,7 @@ class SegSid(Resource):
         uid = session["user_id"]
         user = User.objects(id = uid).first()
         seg = Seg.objects(sid = sid).first()
-        if not user["assigned"] == sid or not seg["assigned"]:
+        if uid not in seg["users"]:
             abort(400,
                   messages = [["danger", SegSid.edit_err]])
         if not len(seg["utt"]) == len(utt):
