@@ -188,7 +188,7 @@ class SegSid(Resource):
         user = User.objects(id = uid).first()
         seg = Seg.objects(sid = sid).first()
         if uid not in seg["users"]:
-            abort(400,
+            abort(403,
                   messages = [["danger", SegSid.edit_err]])
         if not len(seg["utt"]) == len(utt):
             abort(400,
@@ -229,7 +229,6 @@ class SegSid(Resource):
                                                           sid)]])
         seg.modify(utt = seg["utt"], inc__done = 1, assigned = False)
         user.modify(assigned = None)
-        print("POST completed.")
         return {}, 201
 
 
@@ -252,7 +251,7 @@ class SegAssign(Resource):
         else:
             seg = Seg.objects(done = done,
                               assigned = False,
-                              users__nin = uid).first()
+                              users__nin = [uid]).first()
             try:
                 seg.modify(assigned = True, add_to_set__users = uid)
                 user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
