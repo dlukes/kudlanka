@@ -79,14 +79,13 @@ class Seg(db.Document):         # DynamicDocument
         "collection": "segs",
         "indexes": [
             {"fields": ["sid"], "unique": True},
-            {"fields": ["done", "assigned", "users"]}
+            {"fields": ["assigned", "users"]}
         ]
     }
     sid = db.StringField(max_length = 10, required = True)
     oral = db.StringField(max_length = 10, required = True)
     num = db.StringField(max_length = 10, required = True)
-    done = db.IntField(required = True)
-    assigned = db.BooleanField(required = True)
+    assigned = db.StringField(required = True)
     users = db.ListField(required = True)
     utt = db.ListField(required = True)
 
@@ -187,7 +186,7 @@ class SegSid(Resource):
         uid = session["user_id"]
         user = User.objects(id = uid).first()
         seg = Seg.objects(sid = sid).first()
-        if uid not in seg["users"]:
+        if uid not in seg.users + [seg.assigned]:
             abort(403,
                   messages = [["danger", SegSid.edit_err]])
         if not len(seg["utt"]) == len(utt):
@@ -227,7 +226,7 @@ class SegSid(Resource):
                                    SegSid.word_err.format(postpos["word"],
                                                           dbpos["word"], i,
                                                           sid)]])
-        seg.modify(utt = seg["utt"], inc__done = 1, assigned = False)
+        seg.modify(utt = seg["utt"], assigned = "", add_to_set__users = uid)
         user.modify(assigned = None)
         return {}, 201
 
@@ -249,11 +248,11 @@ class SegAssign(Resource):
             seg = Seg.objects(sid = user.assigned).first()
             return seg.to_mongo()
         else:
-            seg = Seg.objects(done = done,
-                              assigned = False,
+            seg = Seg.objects(assigned = None,
+                              users__size = done,
                               users__nin = [uid]).first()
             try:
-                seg.modify(assigned = True, add_to_set__users = uid)
+                seg.modify(assigned = uid)
                 user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
             except AttributeError:
                 # seg is None

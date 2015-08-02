@@ -72,8 +72,7 @@ def xml2dict(xml):
                 "sid": id + "_" + str(idx),
                 "oral": oral,
                 "utt": utterance,
-                "done": 0,
-                "assigned": False,
+                "assigned": None,
                 "users": []
             })
             idx += 1
