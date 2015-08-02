@@ -18,6 +18,26 @@ app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
 
+# Utility functions
+
+
+@app.context_processor
+def utility_processor():
+    """Define functions to make available to templates here and return them in a
+    dictionary.
+
+    """
+
+    def wtf2bs(flash_class):
+        """Translate flash class from WTF to Bootstrap."""
+        if flash_class == "error":
+            return "danger"
+        else:
+            return flash_class
+
+    return dict(wtf2bs = wtf2bs)
+
+
 # MongoDB setup
 
 db = MongoEngine(app)
