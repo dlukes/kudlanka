@@ -150,7 +150,7 @@ def list():
     segs = []
     for seg in Seg.objects(sid__in = user.segs):
         utt = " ".join(pos["word"] for pos in seg.utt)
-        segs.append(dict(sid = seg.sid, utt = utt))
+        segs.append(dict(sid = seg.sid, oral = seg.oral, utt = utt))
     return render_template("list.html", segs = segs)
 
 

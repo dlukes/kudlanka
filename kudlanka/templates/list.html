@@ -11,13 +11,14 @@
           <table class="table table-condensed table-striped">
             <thead>
               <tr>
-                <th>ID</th><th>segment</th>
+                <th>SID</th><th>ORAL</th><th>segment</th>
               </tr>
             </thead>
             <tbody>
               {% for seg in segs %}
               <tr>
                 <td><a href="/edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
+                <td>{{ seg.oral }}</td>
                 <td>{{ seg.utt }}</td>
               </tr>
               {% endfor %}
