@@ -210,6 +210,12 @@ class SegSid(Resource):
                     # along with a False flag)
                     if "note" in postpos:
                         dbpos.setdefault("notes", {})[uid] = postpos["note"]
+                else:
+                    # the flag may also have been removed after having been
+                    # added in an earlier POST; make sure it's gone by deleting
+                    # it
+                    dbpos.setdefault("flags", {}).pop(uid, None)
+                    dbpos.setdefault("notes", {}).pop(uid, None)
                 if "pool" not in dbpos:
                     continue
                 elif postpos["lemma"] in dbpos["pool"]:
