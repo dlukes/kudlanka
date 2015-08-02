@@ -40,6 +40,11 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       });
   };
 
+  // scroll to top whenever a new message is added
+  $scope.$watch("messages", function() {
+    window.scrollTo(0, 0);
+  });
+
   $scope.firstKey = function(obj) {
     if (obj !== null && typeof obj == "object") {
       for (var k in obj) return k;
