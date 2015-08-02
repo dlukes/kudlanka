@@ -54,6 +54,9 @@ def xml2dict(xml):
         else:
             return True
 
+    def fix_lemmas_with_spaces(tab_sep):
+        return [re.sub("^\(.+?\)", "META", lemtag) for lemtag in tab_sep]
+
     # a global index counter for all seg elements in xml; incremented below
     idx = 0
     id = xml.attrib.get("id", "ID_MISSING")
@@ -81,6 +84,7 @@ def xml2dict(xml):
             for pos in seg.text.strip().split("\n"):
                 tab_sep = pos.split("\t")
                 word = tab_sep.pop(0)
+                tab_sep = fix_lemmas_with_spaces(tab_sep)
                 if nonamb_pos(tab_sep):
                     lemma, tag = tab_sep[0].split()
                     utterance.append({
