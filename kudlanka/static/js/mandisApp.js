@@ -7,17 +7,38 @@ app.config(function($interpolateProvider, $locationProvider) {
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "/api";
+
+  // get utterance from API either by sid or by "random" assignment (as
+  // specified by API call in request)
+  function getUtt(request) {
+    $http.get(api + request).
+      success(function(data) {
+        $scope.utt = data.utt;
+        $scope.sid = data.sid;
+        $location.path("/edit/" + data.sid + "/");
+      }).
+      error(function(data) {
+        $scope.messages = data.messages;
+      });
+  }
+
   var sid = $location.path().split("/");
   // flask ensures a trailing slash, so the sid is always second to last when
   // splitting on "/":
   sid = sid[sid.length - 2];
   var request = sid == "edit" ? "/assign/0" : "/sid/" + sid;
-  $http.get(api + request).
-    success(function(data) {
-      $scope.utt = data.utt;
-      $scope.messages = data.messages;
-      $location.path("/edit/" + data.sid + "/");
-    });
+  getUtt(request);
+
+  $scope.submitUtt = function() {
+    $http.post(api + "/sid/" + $scope.sid + "/", $scope.utt).
+      success(function(data) {
+        $scope.messages = null;
+        getUtt("/assign/0");
+      }).
+      error(function(data) {
+        $scope.messages = data.messages;
+      });
+  };
 
   $scope.firstKey = function(obj) {
     if (obj !== null && typeof obj == "object") {

@@ -4,11 +4,11 @@
 
   <div class="row">
     <div class="col-md-12">
-      <div class="alert alert-{[ message.type ]} alert-dismissible"
+      <div class="alert alert-{[ message[0] ]} alert-dismissible"
            role="alert" ng-repeat="message in messages">
         <button type="button" class="close" data-dismiss="alert"
                 aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        {[ message.content ]}
+        {[ message[1] ]}
       </div>
     </div>
   </div>
@@ -89,10 +89,11 @@
                 <td>
                   <textarea ng-if="pos.flag" ng-model="pos.note"></textarea>
                 </td>
-          </table>
               </tr>
             </tbody>
           </table>
+          <button ng-click="submitUtt()" type="button"
+                  class="btn btn-primary">Uložit</button>
         </div>
       </div>
     </div>

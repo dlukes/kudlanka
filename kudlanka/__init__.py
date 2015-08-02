@@ -3,7 +3,7 @@ from flask.ext.mongoengine import MongoEngine
 from flask.ext.security import Security, MongoEngineUserDatastore, RoleMixin, \
     UserMixin, login_required
 from flask.ext.security.forms import LoginForm
-from flask.ext.restful import Resource, Api
+from flask.ext.restful import Resource, Api, abort
 
 from wtforms import TextField, PasswordField, SubmitField, BooleanField
 from datetime import date
@@ -165,15 +165,69 @@ def debug():
 
 api = Api(app, decorators = [login_required])
 
-
 class SegSid(Resource):
+    err = "Neoprávněný přístup."
+    edit_err = "Nemáte právo editovat tento segment."
+    len_err = ("Délka vkládaného segmentu neodpovídá délce segmentu pro SID {} v "
+               "databázi.")
+    word_err = ("Vkládané slovo {} neodpovídá slovu {} na {}. pozici v segmentu "
+                "s SID {} v databázi.")
+    miss_l_err = "Na {}. vkládané pozici prosím vyberte lemma."
+    miss_t_err = "Na {}. vkládané pozici prosím vyberte tag."
+
     def get(self, sid):
         seg = Seg.objects(sid = sid).first()
         return seg.to_mongo()
 
     def post(self, sid):
-        # the user can post a seg only if it's currently assigned to them
-        pass
+        request.get_data()
+        utt = request.json
+        uid = session["user_id"]
+        user = User.objects(id = uid).first()
+        seg = Seg.objects(sid = sid).first()
+        if not user["assigned"] == sid or not seg["assigned"]:
+            abort(400,
+                  messages = [["danger", SegSid.edit_err]])
+        if not len(seg["utt"]) == len(utt):
+            abort(400,
+                  messages = [["danger", SegSid.len_err.format(sid)]])
+        for i, dbpos, postpos in zip(range(1, len(seg["utt"]) + 1),
+                                     seg["utt"],
+                                     utt):
+            if "lemma" not in postpos:
+                abort(400, messages = [["warning",
+                                        SegSid.miss_l_err.format(i)]])
+            if "tag" not in postpos:
+                abort(400, messages = [["warning",
+                                        SegSid.miss_t_err.format(i)]])
+            if dbpos["word"] == postpos["word"]:
+                if "pool" not in dbpos:
+                    continue
+                elif postpos["lemma"] in dbpos["pool"]:
+                    dbpos.get("lemmas", {})[uid] = postpos["lemma"]
+                else:
+                    abort(400, messages = [["danger", SegSid.err]])
+                if postpos["tag"] in dbpos["pool"].get(postpos["lemma"], {}):
+                    dbpos.get("tags", {})[uid] = postpos["tag"]
+                else:
+                    abort(400, messages = [["danger", SegSid.err]])
+                # only save flag if it's True (it might be present, but set to
+                # False)
+                if postpos.get("flag"):
+                    dbpos.get("flags", {})[uid] = True
+                    # only save note if flag was True (a note might be present
+                    # along with a False flag)
+                    if "note" in postpos:
+                        dbpos.get("notes", {})[uid] = postpos["note"]
+            else:
+                abort(400,
+                      messages = [["danger",
+                                   SegSid.word_err.format(postpos["word"],
+                                                          dbpos["word"], i,
+                                                          sid)]])
+        seg.modify(utt = seg["utt"], inc__done = 1, assigned = False)
+        user.modify(assigned = None)
+        return {}, 201
 
 
 class SegAssign(Resource):
