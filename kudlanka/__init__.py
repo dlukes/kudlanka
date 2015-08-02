@@ -6,6 +6,7 @@ from flask.ext.security.forms import LoginForm
 from flask.ext.restful import Resource, Api
 
 from wtforms import TextField, PasswordField, SubmitField, BooleanField
+from datetime import date
 
 # App setup
 
@@ -21,6 +22,7 @@ app.config["MONGODB_PORT"] = 27017
 # Utility functions
 
 
+@app.before_first_request
 @app.context_processor
 def utility_processor():
     """Define functions to make available to templates here and return them in a
@@ -35,7 +37,15 @@ def utility_processor():
         else:
             return flash_class
 
-    return dict(wtf2bs = wtf2bs)
+    def footer_date():
+        start_year = 2015
+        this_year = date.today().year
+        if this_year > start_year:
+            return str(start_year) + "&ndash;" + str(this_year)
+        else:
+            return str(start_year)
+
+    return dict(wtf2bs = wtf2bs, footer_date = footer_date)
 
 
 # MongoDB setup
