@@ -201,24 +201,24 @@ class SegSid(Resource):
                 abort(400, messages = [["warning",
                                         SegSid.miss_t_err.format(i)]])
             if dbpos["word"] == postpos["word"]:
-                if "pool" not in dbpos:
-                    continue
-                elif postpos["lemma"] in dbpos["pool"]:
-                    dbpos.get("lemmas", {})[uid] = postpos["lemma"]
-                else:
-                    abort(400, messages = [["danger", SegSid.err]])
-                if postpos["tag"] in dbpos["pool"].get(postpos["lemma"], {}):
-                    dbpos.get("tags", {})[uid] = postpos["tag"]
-                else:
-                    abort(400, messages = [["danger", SegSid.err]])
                 # only save flag if it's True (it might be present, but set to
                 # False)
                 if postpos.get("flag"):
-                    dbpos.get("flags", {})[uid] = True
+                    dbpos.setdefault("flags", {})[uid] = True
                     # only save note if flag was True (a note might be present
                     # along with a False flag)
                     if "note" in postpos:
-                        dbpos.get("notes", {})[uid] = postpos["note"]
+                        dbpos.setdefault("notes", {})[uid] = postpos["note"]
+                if "pool" not in dbpos:
+                    continue
+                elif postpos["lemma"] in dbpos["pool"]:
+                    dbpos.setdefault("lemmas", {})[uid] = postpos["lemma"]
+                else:
+                    abort(400, messages = [["danger", SegSid.err]])
+                if postpos["tag"] in dbpos["pool"].get(postpos["lemma"], {}):
+                    dbpos.setdefault("tags", {})[uid] = postpos["tag"]
+                else:
+                    abort(400, messages = [["danger", SegSid.err]])
             else:
                 abort(400,
                       messages = [["danger",
