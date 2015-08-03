@@ -5,18 +5,6 @@ app.config(function($interpolateProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 });
 
-// make back button work by reloading URL (mandisApp is single page otherwise)
-app.directive('backButton', ['$window', function($window) {
-  return {
-    restrict: 'A',
-    link: function (scope, elem, attrs) {
-      elem.bind('click', function () {
-        $window.history.back();
-      });
-    }
-  };
-}]);
-
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "/api";
   var sonda, prev, next;
@@ -24,6 +12,16 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   // get utterance from API either by sid or by "random" assignment (as
   // specified by API call in request)
   function getUtt(request) {
+    // if we're being passed an object, it's an event object (onpopstate or
+    // onload) → ditch it
+    if (typeof(request) === "object") {
+      var sid = $location.path().split("/");
+      // flask ensures a trailing slash, so the sid is always second to last
+      // when splitting on "/":
+      sid = sid[sid.length - 2];
+      request = sid == "edit" ? "/assign/0/" : "/sid/" + sid + "/";
+    }
+    console.log(request);
     $http.get(api + request).
       success(function(data) {
         $scope.messages = data.messages;
@@ -74,13 +72,6 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.messages = data.messages;
       });
   };
-
-  var sid = $location.path().split("/");
-  // flask ensures a trailing slash, so the sid is always second to last when
-  // splitting on "/":
-  sid = sid[sid.length - 2];
-  var request = sid == "edit" ? "/assign/0/" : "/sid/" + sid;
-  getUtt(request);
 
   // scroll to top whenever a new message is added
   $scope.$watch("messages", function() {
@@ -338,5 +329,9 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         "B": "obouvidé sloveso"
       }
     ];
+
+  // load the data from the API based on the view requested on each user action
+  // (either when page is first loaded, or when history buttons are clicked)
+  window.onload = window.onpopstate = getUtt;
 
 });
