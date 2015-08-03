@@ -21,7 +21,6 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       sid = sid[sid.length - 2];
       request = sid == "edit" ? "/assign/0/" : "/sid/" + sid + "/";
     }
-    console.log(request);
     $http.get(api + request).
       success(function(data) {
         $scope.messages = data.messages;
