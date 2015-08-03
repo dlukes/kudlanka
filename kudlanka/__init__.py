@@ -255,7 +255,13 @@ class SegSid(Resource):
                                                           dbpos["word"], i,
                                                           sid)]])
         seg.modify(utt = seg["utt"], assigned = "", add_to_set__users = uid)
-        user.modify(assigned = None)
+        # only remove segment assignment if the user is currently posting their
+        # most recently asssigned segment, which means they're ready to be
+        # assigned a new one (otherwise they're just re-editing a segment from
+        # their history, in which case we want them to keep the segment they
+        # have been assigned)
+        if user.assigned == seg.sid:
+            user.modify(assigned = None)
         return {}, 201
 
 
