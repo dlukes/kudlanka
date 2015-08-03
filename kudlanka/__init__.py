@@ -148,7 +148,8 @@ def list():
     uid = session["user_id"]
     user = User.objects(id = uid).first()
     segs = []
-    for seg in Seg.objects(sid__in = user.segs):
+    for sid in reversed(user.segs):
+        seg = Seg.objects(sid = sid).first()
         utt = " ".join(pos["word"] for pos in seg.utt)
         segs.append(dict(sid = seg.sid, oral = seg.oral, utt = utt))
     return render_template("list.html", segs = segs)
