@@ -191,7 +191,16 @@ class SegSid(Resource):
         if seg is None:
             abort(400,
                   messages = [["danger", SegSid.seg_err.format(sid)]])
-        return seg.to_mongo()
+        seg = seg.to_mongo()
+        uid = session["user_id"]
+        for pos in seg["utt"]:
+            if pos.get("lemmas", None):
+                pos["lemma"] = pos["lemmas"].get(uid, None)
+            if pos.get("tags", None):
+                pos["tag"] = pos["tags"].get(uid, None)
+            pos["flag"] = pos.get("flags", {}).get(uid, None)
+            pos["note"] = pos.get("notes", {}).get(uid, None)
+        return seg
 
     def post(self, sid):
         request.get_data()
