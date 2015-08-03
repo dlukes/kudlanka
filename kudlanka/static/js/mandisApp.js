@@ -5,6 +5,18 @@ app.config(function($interpolateProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 });
 
+// make back button work by reloading URL (mandisApp is single page otherwise)
+app.directive('backButton', ['$window', function($window) {
+  return {
+    restrict: 'A',
+    link: function (scope, elem, attrs) {
+      elem.bind('click', function () {
+        $window.history.back();
+      });
+    }
+  };
+}]);
+
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "/api";
   var sonda, prev, next;
@@ -14,6 +26,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   function getUtt(request) {
     $http.get(api + request).
       success(function(data) {
+        $scope.messages = data.messages;
         $scope.num = data.num;
         $scope.utt = data.utt;
         $scope.sid = data.sid;
