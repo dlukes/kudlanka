@@ -18,6 +18,7 @@ app.config["SECURITY_PASSWORD_SALT"] = "testing"
 app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
+app.config["APPLICATION_ROOT"] = "/"
 
 app.config["MAX_DISAMB_PASSES"] = 2
 
