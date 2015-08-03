@@ -1,17 +1,16 @@
 # Dev tips
 
-- use `bower install` for fetching components like bootstrap, jquery, angular etc.
+- use `bower install` for fetching components like bootstrap, jquery, angular
+  etc.
 - use [Flask Assets](http://flask-assets.readthedocs.org/en/latest/) once it
   comes to minification
 - keep track of python deps using `pip freeze >requirements.txt`
 - REST validation with `reqparse` from `flask_restful`
 
-- for each seg, keep track of whether it has been::
-    - done once
-    - done twice
-    - currently assigned
-- once a seg is assigned, a given editor must complete it and no other editor
-  must be able to access it
+## Assigning already "done" segments
+
+Remove done parameter from SegAssign API, make it a settable user property
+instead...?
 
 # Name
 
