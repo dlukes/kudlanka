@@ -15,7 +15,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for seg in segs %}
+              {% for seg in segs | reverse %}
               <tr>
                 <td><a href="/edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
                 <td>{{ seg.oral }}</td>
