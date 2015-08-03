@@ -11,10 +11,10 @@ from datetime import date
 # App setup
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
-app.config["SECRET_KEY"] = "testing"
+app.config["DEBUG"] = False
+app.config["SECRET_KEY"] = "\xfbh\xfb\xdd\x18\xb0\xc2x\xf6\xf7\x15\x18\xd8\xf6\x8c\xae;m{\xe3G\x9a\x12\x91"
 app.config["SECURITY_PASSWORD_HASH"] = "pbkdf2_sha512"
-app.config["SECURITY_PASSWORD_SALT"] = "testing"
+app.config["SECURITY_PASSWORD_SALT"] = "I\x1e\x13\xedY\x82S\xf4\xdf\xd6\x90\x9ci\x9d\xf6W#p\xa6u\x00\xc7!\xf5"
 app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
