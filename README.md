@@ -21,6 +21,13 @@ instead...?
   - server-side: for all routes
   - client-side: inside the `<base>` tag of html templates
 
+→ turns out `APPLICATION_ROOT` is only relevant for setting cookies, it has
+nothing to do with setting a prefix and ensuring correct redirection. Have a
+look at [this snippet](http://flask.pocoo.org/snippets/35/) instead, or at
+[blueprings](http://flask.pocoo.org/docs/0.10/blueprints/), which allow to
+create instances of applications and wire them up at arbitrary prefixes (among
+other things).
+
 ## User registration
 
 Bare views for registration provided by Flask Security are available by
