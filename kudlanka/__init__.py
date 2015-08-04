@@ -1,7 +1,7 @@
 from flask import *
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.security import Security, MongoEngineUserDatastore, RoleMixin, \
-    UserMixin, login_required
+    UserMixin, login_required, current_user, url_for_security
 from flask.ext.security.forms import LoginForm
 from flask.ext.restful import Resource, Api, abort
 
@@ -10,15 +10,43 @@ from datetime import date
 
 # App setup
 
-app = Flask(__name__)
+
+# a poor man's APPLICATION_ROOT
+def k(url):
+    return "/kudlanka" + url
+
+
+app = Flask(__name__, static_url_path = k("/static"))
+
 app.config["DEBUG"] = False
+
+# Flask Security config
 app.config["SECRET_KEY"] = "\xfbh\xfb\xdd\x18\xb0\xc2x\xf6\xf7\x15\x18\xd8\xf6\x8c\xae;m{\xe3G\x9a\x12\x91"
 app.config["SECURITY_PASSWORD_HASH"] = "pbkdf2_sha512"
 app.config["SECURITY_PASSWORD_SALT"] = "I\x1e\x13\xedY\x82S\xf4\xdf\xd6\x90\x9ci\x9d\xf6W#p\xa6u\x00\xc7!\xf5"
+app.config["SECURITY_SEND_REGISTER_EMAIL"] = False
+app.config["SECURITY_LOGIN_URL"] = k("/login")
+app.config["SECURITY_LOGOUT_URL"] = k("/logout")
+app.config["SECURITY_POST_LOGIN_VIEW"] = k("/edit")
+app.config["SECURITY_POST_LOGOUT_VIEW"] = k("/")
+
+# register users manually using mongo shell (see README)
+# app.config["SECURITY_REGISTERABLE"] = True
+# app.config["SECURITY_REGISTER_URL"] = k("/register")
+# app.config["SECURITY_POST_REGISTER_VIEW"] = k("/edit")
+
+# MongoDB config
 app.config["MONGODB_DB"] = "kudlanka"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
-app.config["APPLICATION_ROOT"] = "/kudlanka/"
+
+# ideally, what is currently handled by the `k()` function should be handled by
+# just setting the APPLICATION_ROOT and SERVER_NAME correctly, but this won't
+# work until I figure out the right Apache2 reverse proxy setup; the settings
+# are kept around for reference and debugging purposes (to be able to print
+# available routes on app load during testing)
+app.config["SERVER_NAME"] = "localhost:1993"
+app.config["APPLICATION_ROOT"] = "/"
 
 app.config["MAX_DISAMB_PASSES"] = 2
 
@@ -48,7 +76,7 @@ def utility_processor():
         else:
             return str(start_year)
 
-    return dict(wtf2bs = wtf2bs, footer_date = footer_date)
+    return dict(wtf2bs = wtf2bs, footer_date = footer_date, k = k)
 
 
 # MongoDB setup
@@ -121,13 +149,15 @@ security = Security(app, user_datastore, login_form = KudlankaLogin)
 ## UI
 
 
-@app.route("/")
-@login_required
+@app.route(k("/"))
 def root():
-    return redirect(url_for("edit"))
+    if current_user.is_authenticated():
+        return redirect(url_for("edit"))
+    else:
+        return redirect(url_for_security("login"))
 
 
-@app.route("/list/")
+@app.route(k("/list/"))
 @login_required
 def list():
     uid = session["user_id"]
@@ -140,15 +170,15 @@ def list():
     return render_template("list.html", segs = segs)
 
 
-@app.route("/edit/")
-@app.route("/edit/<string:sid>/")
+@app.route(k("/edit/"))
+@app.route(k("/edit/<string:sid>/"))
 # the sid is handled client-side by angular
 @login_required
 def edit(sid = None):
     return render_template("edit.html")
 
 
-@app.route("/debug/")
+@app.route(k("/debug/"))
 def debug():
     if app.config["DEBUG"]:
         assert False
@@ -284,5 +314,5 @@ class SegAssign(Resource):
             return seg.to_mongo()
 
 
-api.add_resource(SegSid, "/api/sid/<string:sid>/")
-api.add_resource(SegAssign, "/api/assign/<int:done>/")
+api.add_resource(SegSid, k("/api/sid/<string:sid>/"))
+api.add_resource(SegAssign, k("/api/assign/<int:done>/"))
