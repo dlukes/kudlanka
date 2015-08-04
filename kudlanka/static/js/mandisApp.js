@@ -6,7 +6,7 @@ app.config(function($interpolateProvider, $locationProvider) {
 });
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
-  var api = "/api";
+  var api = "api";
   var sonda, prev, next;
 
   // get utterance from API either by sid or by "random" assignment (as

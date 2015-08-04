@@ -13,17 +13,17 @@ from datetime import date
 
 # a poor man's APPLICATION_ROOT
 def k(url):
-    return "/kudlanka" + url
+    return url
 
 
 app = Flask(__name__, static_url_path = k("/static"))
 
-app.config["DEBUG"] = False
+app.config["DEBUG"] = True
 
 # Flask Security config
-app.config["SECRET_KEY"] = "\xfbh\xfb\xdd\x18\xb0\xc2x\xf6\xf7\x15\x18\xd8\xf6\x8c\xae;m{\xe3G\x9a\x12\x91"
+app.config["SECRET_KEY"] = "testing"
 app.config["SECURITY_PASSWORD_HASH"] = "pbkdf2_sha512"
-app.config["SECURITY_PASSWORD_SALT"] = "I\x1e\x13\xedY\x82S\xf4\xdf\xd6\x90\x9ci\x9d\xf6W#p\xa6u\x00\xc7!\xf5"
+app.config["SECURITY_PASSWORD_SALT"] = "testing"
 app.config["SECURITY_SEND_REGISTER_EMAIL"] = False
 app.config["SECURITY_LOGIN_URL"] = k("/login")
 app.config["SECURITY_LOGOUT_URL"] = k("/logout")
@@ -36,7 +36,7 @@ app.config["SECURITY_POST_LOGOUT_VIEW"] = k("/")
 # app.config["SECURITY_POST_REGISTER_VIEW"] = k("/edit")
 
 # MongoDB config
-app.config["MONGODB_DB"] = "kudlanka"
+app.config["MONGODB_DB"] = "kudlanka-test"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
 
@@ -45,7 +45,7 @@ app.config["MONGODB_PORT"] = 27017
 # work until I figure out the right Apache2 reverse proxy setup; the settings
 # are kept around for reference and debugging purposes (to be able to print
 # available routes on app load during testing)
-app.config["SERVER_NAME"] = "localhost:1993"
+app.config["SERVER_NAME"] = "trnka:5000"
 app.config["APPLICATION_ROOT"] = "/"
 
 app.config["MAX_DISAMB_PASSES"] = 2
