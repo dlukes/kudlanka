@@ -94,23 +94,7 @@ class Seg(db.Document):         # DynamicDocument
     def to_mongo(self, *args, **kwargs):
         mongo = super(Seg, self).to_mongo(*args, **kwargs)
         mongo["_id"] = str(mongo["_id"])
-        # for debugging mandisApp flash messages
-        # mongo["messages"] = [{
-        #     "type": "danger",
-        #     "content": "Nastala chyba."
-        # },
-        # {
-        #     "type": "danger",
-        #     "content": "Nastala chyba."
-        # }]
         return mongo
-
-
-segs = []
-@app.before_first_request
-def retrieve_unprocessed_segs():
-    for seg in Seg.objects():
-        segs.append(seg.sid)
 
 
 # Flask-Security setup
@@ -127,9 +111,9 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore, login_form = KudlankaLogin)
 
 
-@app.before_first_request
-def create_user():
-    user_datastore.create_user(email="testing", password="testing")
+# @app.before_first_request
+# def create_user():
+#     user_datastore.create_user(email="testing", password="testing")
 
 
 # Routes
