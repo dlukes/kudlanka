@@ -12,6 +12,23 @@
 Remove done parameter from SegAssign API, make it a settable user property
 instead...?
 
+## Production setup
+
+- couldn't get setting `APPLICATION_ROOT` to work -- probably some problems in
+  the config of the Apache2 proxy?
+- defined a `k()` function instead, which is used to set a specified URL prefix
+  wherever necessary in the app, i.e.:
+  - server-side: for all routes
+  - client-side: inside the `<base>` tag of html templates
+
+## User registration
+
+Bare views for registration provided by Flask Security are available by
+uncommenting the appropriate config lines, but we don't actually want just
+anyone to be able to register. Just fire up the `mongo kudlanka` shell and add
+users manually with `db.user.insert({email: "username", password:
+"password"})`. The password will be automatically hashed on first login.
+
 # Name
 
 Manuální disambiguace → mandis → mantis religiosa → kudlanka
