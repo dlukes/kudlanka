@@ -32,6 +32,8 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         prev = next = parseInt(sonda_index[1]);
         $scope.prev = [];
         $scope.next = [];
+        $scope.helpTag = "";
+        $scope.desambForm.$setPristine();
         $location.path("/edit/" + data.sid + "/");
       }).
       error(function(data) {
