@@ -2,7 +2,8 @@ from flask import *
 from flask.ext.restful import Resource, Api, abort
 from flask.ext.security import login_required
 
-from kudlanka import app, k
+from kudlanka import app
+from kudlanka.config import k
 from kudlanka.models import Seg, User
 
 api = Api(app, decorators = [login_required])

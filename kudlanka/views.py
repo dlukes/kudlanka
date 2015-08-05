@@ -3,7 +3,8 @@ from flask.ext.security import Security, login_required, current_user, \
     url_for_security
 from flask.ext.security.forms import LoginForm
 
-from kudlanka import app, k
+from kudlanka import app
+from kudlanka.config import k
 from kudlanka.models import user_datastore, User, Seg
 
 from wtforms import TextField, PasswordField, SubmitField, BooleanField

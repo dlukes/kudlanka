@@ -1,5 +1,7 @@
 **/vendor/
 **/__pycache__/
 data/
+instance/
+
 *.pyc
 *~
