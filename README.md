@@ -1,11 +1,5 @@
 # TODO
 
-- rewrite app as wireable Blueprint
-- refactor app into individual files, including sensitive config under
-  `instance/` and "real" config files
-- confirm navigation when form dirty
-- display username in navbar
-
 ## Assigning already "done" segments
 
 Remove done parameter from SegAssign API, make it a settable user property
@@ -32,9 +26,24 @@ instead...?
 → turns out `APPLICATION_ROOT` is only relevant for setting cookies, it has
 nothing to do with setting a prefix and ensuring correct redirection. Have a
 look at [this snippet](http://flask.pocoo.org/snippets/35/) instead, or at
-[blueprings](http://flask.pocoo.org/docs/0.10/blueprints/), which allow to
+[blueprints](http://flask.pocoo.org/docs/0.10/blueprints/), which allow to
 create instances of applications and wire them up at arbitrary prefixes (among
 other things).
+
+However, blueprints are not full-fledged apps, they can't have their own
+sessions grafted onto them using Flask Security, for instance. For this reason,
+it's not practical or straightforward to just package an app as a blueprint and
+let it run under an arbitrary prefix in a container app.
+
+Another possibility is to use `werkzeug.wsgi.DispatcherMiddleware`, again
+creating a container app and wiring sub-apps on different URL prefixes. But
+unfortunately, this isn't hassle-free either, various components tend to assume
+they're running under root anyway unless explicitly told otherwise (Flask
+Security routes, Flask Restful routes), introducing subtle breakage.
+
+For this reason, explicitly wrapping every route in `k()` is probably the best
+option -- extensions always have a way of altering individual routes, but they
+might not have an option to set a universal URL prefix.
 
 ## User registration
 
@@ -50,5 +59,6 @@ Manuální disambiguace → mandis → mantis religiosa → kudlanka
 
 # Requirements
 
-See for webapp, see `requirements.txt`. Scripts under `utils/` may have
-additional dependencies, install as needed.
+See `bower.json` for client-side and `requirements.txt` for
+server-side. Scripts under `utils/` may have additional dependencies, install
+as needed.
