@@ -43,7 +43,8 @@ Security routes, Flask Restful routes), introducing subtle breakage.
 
 For this reason, explicitly wrapping every route in `k()` is probably the best
 option -- extensions always have a way of altering individual routes, but they
-might not have an option to set a universal URL prefix.
+might not have an option to set a universal URL prefix. NOTE: remember to also
+`Flask(..., static_url_path = k("/static"))`!
 
 ## User registration
 
