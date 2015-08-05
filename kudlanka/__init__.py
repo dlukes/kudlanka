@@ -11,42 +11,38 @@ from datetime import date
 # App setup
 
 
-# a poor man's APPLICATION_ROOT
+# a hack to enable mounting the app at an arbitrary URL prefix
 def k(url):
     return url
 
 
 app = Flask(__name__, static_url_path = k("/static"))
 
-app.config["DEBUG"] = True
-
 # Flask Security config
-app.config["SECRET_KEY"] = "testing"
+app.config["SECRET_KEY"] = "foobarbaz"
 app.config["SECURITY_PASSWORD_HASH"] = "pbkdf2_sha512"
-app.config["SECURITY_PASSWORD_SALT"] = "testing"
-app.config["SECURITY_SEND_REGISTER_EMAIL"] = False
+app.config["SECURITY_PASSWORD_SALT"] = "foobarbaz"
 app.config["SECURITY_LOGIN_URL"] = k("/login")
 app.config["SECURITY_LOGOUT_URL"] = k("/logout")
 app.config["SECURITY_POST_LOGIN_VIEW"] = k("/edit")
 app.config["SECURITY_POST_LOGOUT_VIEW"] = k("/")
 
 # register users manually using mongo shell (see README)
+# app.config["SECURITY_SEND_REGISTER_EMAIL"] = False
 # app.config["SECURITY_REGISTERABLE"] = True
 # app.config["SECURITY_REGISTER_URL"] = k("/register")
 # app.config["SECURITY_POST_REGISTER_VIEW"] = k("/edit")
 
 # MongoDB config
-app.config["MONGODB_DB"] = "kudlanka-test"
+app.config["MONGODB_DB"] = "ktest"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
 
-# ideally, what is currently handled by the `k()` function should be handled by
-# just setting the APPLICATION_ROOT and SERVER_NAME correctly, but this won't
-# work until I figure out the right Apache2 reverse proxy setup; the settings
-# are kept around for reference and debugging purposes (to be able to print
-# available routes on app load during testing)
-app.config["SERVER_NAME"] = "trnka:5000"
-app.config["APPLICATION_ROOT"] = "/"
+# only useful for keeping track of sessions in production; comment out when
+# running on localhost, because SERVER_NAME needs to be a fully qualified
+# domain name in order for sessions to work
+# app.config["SERVER_NAME"] = "trnka.korpus.cz:5000"
+# app.config["APPLICATION_ROOT"] = "/"
 
 app.config["MAX_DISAMB_PASSES"] = 2
 
