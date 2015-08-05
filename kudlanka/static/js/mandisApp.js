@@ -329,6 +329,16 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       }
     ];
 
+  // warn the user about losing data if desambForm has been edited
+  window.onbeforeunload = function() {
+    if ($scope.desambForm.$dirty) {
+      return "Pokud opustíte stránku, ztratíte neuloženou práci na aktuálním"
+        + " segmentu.";
+    } else {
+      return null;
+    }
+  };
+
   // load the data from the API based on the view requested on each user action
   // (either when page is first loaded, or when history buttons are clicked)
   window.onload = window.onpopstate = getUtt;
