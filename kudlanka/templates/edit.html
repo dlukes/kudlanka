@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+<script src="{{ url_for('static', filename = 'vendor/angular/angular.js') }}">
+</script>
+<script src="{{ url_for('static', filename = 'js/mandisApp.js') }}">
+</script>
+
 <div class="container ng-cloak" ng-app="mandisApp" ng-controller="mandisCtrl">
 
   <div class="row">
