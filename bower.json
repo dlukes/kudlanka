@@ -18,6 +18,8 @@
   "dependencies": {
     "angular": "~1.4.3",
     "bootstrap": "~3.3.5",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "datatables": "~1.10.7",
+    "datatables-plugins": "~1.10.7"
   }
 }
