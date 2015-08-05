@@ -20,12 +20,13 @@
           <table id="seg-table" class="table table-striped table-bordered dataTable no-footer">
             <thead>
               <tr>
-                <th>SID</th><th>ORAL</th><th>segment</th>
+                <th>#</th><th>SID</th><th>ORAL</th><th>segment</th>
               </tr>
             </thead>
             <tbody>
               {% for seg in segs %}
               <tr>
+                <td>{{ seg.i }}</td>
                 <td><a href="edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
                 <td>{{ seg.oral }}</td>
                 <td>{{ seg.utt }}</td>
