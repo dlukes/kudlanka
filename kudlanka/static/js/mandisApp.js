@@ -33,7 +33,6 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.prev = [];
         $scope.next = [];
         $scope.helpTag = "";
-        $scope.desambForm.$setPristine();
         $location.path("/edit/" + data.sid + "/");
       }).
       error(function(data) {
@@ -67,6 +66,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
     $http.post(api + "/sid/" + $scope.sid + "/", $scope.utt).
       success(function(data) {
         $scope.messages = null;
+        $scope.desambForm.$setPristine();
         getUtt("/assign/" + done + "/");
       }).
       error(function(data) {
