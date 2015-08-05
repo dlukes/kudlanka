@@ -1,3 +1,5 @@
 $(document).ready(function () {
-  $("#seg-table").DataTable();
+  $("#seg-table").DataTable({
+    order: []
+  });
 });
