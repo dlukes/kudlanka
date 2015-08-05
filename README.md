@@ -1,3 +1,16 @@
+# TODO
+
+- rewrite app as wireable Blueprint
+- refactor app into individual files, including sensitive config under
+  `instance/` and "real" config files
+- confirm navigation when form dirty
+- display username in navbar
+
+## Assigning already "done" segments
+
+Remove done parameter from SegAssign API, make it a settable user property
+instead...?
+
 # Dev tips
 
 - use `bower install` for fetching components like bootstrap, jquery, angular
@@ -6,11 +19,6 @@
   comes to minification
 - keep track of python deps using `pip freeze >requirements.txt`
 - REST validation with `reqparse` from `flask_restful`
-
-## Assigning already "done" segments
-
-Remove done parameter from SegAssign API, make it a settable user property
-instead...?
 
 ## Production setup
 
