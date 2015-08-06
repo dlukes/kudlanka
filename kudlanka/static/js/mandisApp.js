@@ -1,8 +1,26 @@
 var app = angular.module("mandisApp", []);
-app.config(function($interpolateProvider, $locationProvider) {
+
+app.config(function($interpolateProvider, $locationProvider, $httpProvider) {
   $interpolateProvider.startSymbol('{[');
   $interpolateProvider.endSymbol(']}');
   $locationProvider.html5Mode(true);
+  // intercept AJAX errors (connection refused)
+  $httpProvider.interceptors.push(function($q) {
+    return {
+      responseError: function(rejection) {
+        if(rejection.status == 0) {
+          var mandisApp = document.getElementById("mandisApp");
+          var scope = angular.element(mandisApp).scope();
+          scope.messages = [[
+            "danger",
+            "Nepodařilo se navázat spojení se serverem."
+          ]];
+          return null;
+        }
+        return $q.reject(rejection);
+      }
+    };
+  });
 });
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
