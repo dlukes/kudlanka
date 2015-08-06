@@ -74,7 +74,7 @@ def list():
         flag_seg = False
         for pos in seg.utt:
             utt.append(pos["word"])
-            if pos.get("flags", False).get(uid, False):
+            if pos.get("flags", {}).get(uid, False):
                 flag_seg = True
         utt = " ".join(utt)
         segs.append(dict(i = i, sid = seg.sid, oral = seg.oral, utt = utt,
