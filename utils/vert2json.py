@@ -6,6 +6,7 @@ import os
 import sys
 import argparse
 import logging
+import fileinput
 
 import re
 import json
@@ -14,25 +15,24 @@ from lxml import etree
 
 def doc_generator(vert_file):
     """Yield input vertical one doc (as JSON) at a time."""
-    with open(vert_file) as fh:
-        doc = ""
-        for line in fh:
-            doc += line
-            if line.startswith("</doc"):
-                try:
-                    doc = valid_xml(doc)
-                    yield etree.fromstring(doc)
-                except etree.XMLSyntaxError as e:
-                    dump = "__dump__.xml"
-                    with(open(dump, "w")) as fh:
-                        fh.write(doc)
-                    logging.error("An XMLSyntaxError occurred while processing "
-                                  "a document. It has been dumped to {} for "
-                                  "inspection.".format(dump))
-                    logging.error(e)
-                    sys.exit(1)
-                finally:
-                    doc = ""
+    doc = ""
+    for line in fileinput.input(vert_file):
+        doc += line
+        if line.startswith("</doc"):
+            try:
+                doc = valid_xml(doc)
+                yield etree.fromstring(doc)
+            except etree.XMLSyntaxError as e:
+                dump = "__dump__.xml"
+                with(open(dump, "w")) as fh:
+                    fh.write(doc)
+                logging.error("An XMLSyntaxError occurred while processing "
+                              "a document. It has been dumped to {} for "
+                              "inspection.".format(dump))
+                logging.error(e)
+                sys.exit(1)
+            finally:
+                doc = ""
 
 
 def valid_xml(doc):
@@ -110,7 +110,8 @@ def parse_argv(argv):
         argv = sys.argv[1:]
     parser = argparse.ArgumentParser(description = "Prepare vertical for import "
     "into MongoDB for the Kudlanka manual desambiguation webapp.")
-    parser.add_argument("vertical", help = "corpus in vertical format")
+    parser.add_argument("vertical", help = "corpus in vertical format, or - for "
+                        "STDIN", nargs = "?", default = "-")
     parser.add_argument("-l", "--limit", help = "process up to N documents and "
                         "exit", type = int, default = None)
     logging.basicConfig(level = logging.INFO)
