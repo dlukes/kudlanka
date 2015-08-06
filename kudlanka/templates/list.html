@@ -20,7 +20,7 @@
           <table id="seg-table" class="table table-striped table-bordered dataTable no-footer">
             <thead>
               <tr>
-                <th>#</th><th>SID</th><th>ORAL</th><th>segment</th>
+                <th>#</th><th>SID</th><th>ORAL</th><th>☑</th><th>segment</th>
               </tr>
             </thead>
             <tbody>
@@ -29,6 +29,7 @@
                 <td>{{ seg.i }}</td>
                 <td><a href="edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
                 <td>{{ seg.oral }}</td>
+                <td>{{ "ano" if seg.flag_seg else "ne" }}</td>
                 <td>{{ seg.utt }}</td>
               </tr>
               {% endfor %}

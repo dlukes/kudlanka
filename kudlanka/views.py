@@ -70,8 +70,15 @@ def list():
     segs = []
     for i, sid in zip(range(len(user.segs), 0, -1), reversed(user.segs)):
         seg = Seg.objects(sid = sid).first()
-        utt = " ".join(pos["word"] for pos in seg.utt)
-        segs.append(dict(i = i, sid = seg.sid, oral = seg.oral, utt = utt))
+        utt = []
+        flag_seg = False
+        for pos in seg.utt:
+            utt.append(pos["word"])
+            if pos.get("flags", False).get(uid, False):
+                flag_seg = True
+        utt = " ".join(utt)
+        segs.append(dict(i = i, sid = seg.sid, oral = seg.oral, utt = utt,
+                         flag_seg = flag_seg))
     return render_template("list.html", segs = segs)
 
 
