@@ -103,7 +103,6 @@ class SegAssign(Resource):
     done_err = "Pro každý segment požadujeme max. {} hodnocení."
     noseg_err = ("V tuto chvíli pro vás není volný žádný segment s celkovým "
                  "počtem hodnocení {}.")
-    assign_warn = "Zpracujte prosím nejprve dříve přidělený segment."
 
     def get(self, done):
         """Assign a segment which has already been disambiguated done times."""
@@ -115,7 +114,6 @@ class SegAssign(Resource):
         user = User.objects(id = uid).first()
         if user.assigned:
             seg = Seg.objects(sid = user.assigned).first().to_mongo()
-            seg.update(messages = [["warning", SegAssign.assign_warn]])
             return seg
         else:
             seg = Seg.objects(ambiguous = True,
