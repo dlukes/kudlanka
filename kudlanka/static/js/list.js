@@ -1,5 +1,13 @@
 $(document).ready(function () {
-  $("#seg-table").DataTable({
+
+  // add filter inputs to footer
+  $("#seg-table tfoot th").each(function () {
+    var title = $("#seg-table thead th").eq($(this).index()).text();
+    $(this).html('<input type="text" placeholder="' + title + '" />');
+  });
+
+  // initialize data table
+  var dt = $("#seg-table").DataTable({
     order: [],
     language: {
       "sProcessing":   "Provádím...",
@@ -19,4 +27,13 @@ $(document).ready(function () {
       }
     }
   });
+
+  // apply filter criteria
+  dt.columns().every(function () {
+    var that = this;
+    $("input", this.footer()).on("keyup change", function () {
+      that.search(this.value).draw();
+    });
+  });
+
 });
