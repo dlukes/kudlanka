@@ -38,14 +38,15 @@ class Seg(db.Document):         # DynamicDocument
         "collection": "segs",
         "indexes": [
             {"fields": ["sid"], "unique": True},
-            {"fields": ["assigned", "ambiguous", "users"]}
+            {"fields": ["ambiguous", "users"]}
         ]
     }
     sid = db.StringField(max_length = 10, required = True)
     oral = db.StringField(max_length = 10, required = True)
     num = db.StringField(max_length = 10, required = True)
-    assigned = db.StringField(required = True)
     ambiguous = db.StringField(required = True)
+    # users to whom the seg has been assigned (irrespective of whether they
+    # have comleted the assignment)
     users = db.ListField(required = True)
     utt = db.ListField(required = True)
 

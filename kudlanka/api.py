@@ -42,7 +42,7 @@ class SegSid(Resource):
         uid = session["user_id"]
         user = User.objects(id = uid).first()
         seg = Seg.objects(sid = sid).first()
-        if uid not in seg.users + [seg.assigned]:
+        if uid not in seg.users:
             abort(403,
                   messages = [["danger", SegSid.edit_err]])
         if not len(seg["utt"]) == len(utt):
@@ -88,7 +88,7 @@ class SegSid(Resource):
                                    SegSid.word_err.format(postpos["word"],
                                                           dbpos["word"], i,
                                                           sid)]])
-        seg.modify(utt = seg["utt"], assigned = "", add_to_set__users = uid)
+        seg.modify(utt = seg["utt"])
         # only remove segment assignment if the user is currently posting their
         # most recently asssigned segment, which means they're ready to be
         # assigned a new one (otherwise they're just re-editing a segment from
@@ -118,12 +118,11 @@ class SegAssign(Resource):
             seg.update(messages = [["warning", SegAssign.assign_warn]])
             return seg
         else:
-            seg = Seg.objects(assigned = "",
-                              ambiguous = True,
+            seg = Seg.objects(ambiguous = True,
                               users__size = done,
                               users__nin = [uid]).first()
             try:
-                seg.modify(assigned = uid)
+                seg.modify(add_to_set__users = uid)
                 user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
             except AttributeError:
                 # seg is None
