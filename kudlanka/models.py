@@ -20,6 +20,10 @@ class User(db.Document, UserMixin):
     roles = db.ListField(db.ReferenceField(Role), default = [])
     assigned = db.StringField(default = None)
     segs = db.ListField(db.StringField(), default = [])
+    # a list of segment batches (each represented simply by the number of segs
+    # to disambiguate) that the user has completed; the last one is the one
+    # they are currently working on
+    batches = db.ListField(db.IntField(), default = [])
 
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)

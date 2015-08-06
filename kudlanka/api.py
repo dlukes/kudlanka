@@ -6,7 +6,24 @@ from kudlanka import app
 from kudlanka.config import k
 from kudlanka.models import Seg, User
 
+from functools import wraps
+
 api = Api(app, decorators = [login_required])
+
+
+# decorate API calls with this to get user info
+def user_info(api_call):
+
+    @wraps(api_call)
+    def wrapper(*args, **kwargs):
+        uid = session["user_id"]
+        user = User.objects(id = uid).first()
+        user_info = dict(done = len(user.segs), max = user.batches[-1])
+        response = api_call(*args, **kwargs)
+        response.update(user = user_info)
+        return response
+
+    return wrapper
 
 
 class SegSid(Resource):
@@ -19,6 +36,7 @@ class SegSid(Resource):
     miss_l_err = "Na {}. vkládané pozici prosím vyberte lemma."
     miss_t_err = "Na {}. vkládané pozici prosím vyberte tag."
     seg_err = "Segment s SID {} neexistuje."
+    method_decorators = [user_info]
 
     def get(self, sid):
         seg = Seg.objects(sid = sid).first()
@@ -96,13 +114,14 @@ class SegSid(Resource):
         # have been assigned)
         if user.assigned == seg.sid:
             user.modify(assigned = None)
-        return {}, 201
+        return {}
 
 
 class SegAssign(Resource):
     done_err = "Pro každý segment požadujeme max. {} hodnocení."
     noseg_err = ("V tuto chvíli pro vás není volný žádný segment s celkovým "
                  "počtem hodnocení {}.")
+    method_decorators = [user_info]
 
     def get(self, done):
         """Assign a segment which has already been disambiguated done times."""

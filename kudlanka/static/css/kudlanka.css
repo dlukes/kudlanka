@@ -1,16 +1,16 @@
 /* Bootstrap adjustments */
 
 body {
-  padding-top: 60px;
+  padding-top: 71px;
   background: url("../img/groovepaper2.png");
 }
 
-/* this would be needed if the top navbar was being hidden */
-/* @media (max-width: 979px) { */
-/*   body { */
-/*     padding-top: 0px; */
-/*   } */
-/* } */
+/* this is needed if the top navbar is being hidden */
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
 
 /* Sign-in */
 
@@ -78,4 +78,13 @@ thead th:nth-child(3) {
 
 thead th:nth-child(4) {
   width: 1em;
+}
+
+#user-progress {
+  top: 50px;
+  position: fixed;
+  height: 7px;
+  width: 100%;
+  border-radius: 0;
+  z-index: 1040;
 }

@@ -45,6 +45,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.num = data.num;
         $scope.utt = data.utt;
         $scope.sid = data.sid;
+        $scope.user = data.user;
         var sonda_index = data.sid.split("_");
         sonda = sonda_index[0];
         prev = next = parseInt(sonda_index[1]);
