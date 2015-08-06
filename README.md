@@ -63,3 +63,10 @@ Manuální disambiguace → mandis → mantis religiosa → kudlanka
 See `bower.json` for client-side and `requirements.txt` for
 server-side. Scripts under `utils/` may have additional dependencies, install
 as needed.
+
+# License
+
+Copyright © 2015 David Lukeš
+
+Distributed under the
+[GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.en.html).
