@@ -69,10 +69,10 @@ class SegSid(Resource):
         for i, dbpos, postpos in zip(range(1, len(seg["utt"]) + 1),
                                      seg["utt"],
                                      utt):
-            if "lemma" not in postpos:
+            if not postpos.get("lemma", False):
                 abort(400, messages = [["warning",
                                         SegSid.miss_l_err.format(i)]])
-            if "tag" not in postpos:
+            if not postpos.get("tag", False):
                 abort(400, messages = [["warning",
                                         SegSid.miss_t_err.format(i)]])
             if dbpos["word"] == postpos["word"]:
