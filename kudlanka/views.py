@@ -36,7 +36,20 @@ def utility_processor():
         else:
             return str(start_year)
 
-    return dict(wtf2bs = wtf2bs, footer_date = footer_date, k = k)
+    def progress_color(batch):
+        common = "progress-bar-"
+        progress = batch["done"] / batch["assigned"]
+        if progress < .25:
+            return common + "danger"
+        elif progress < .5:
+            return common + "warning"
+        elif progress < .75:
+            return common + "info"
+        else:
+            return common + "success"
+
+    return dict(wtf2bs = wtf2bs, footer_date = footer_date, k = k,
+                progress_color = progress_color)
 
 
 # Security routes
@@ -68,7 +81,7 @@ def list():
     uid = session["user_id"]
     user = User.objects(id = uid).first()
     segs = []
-    for i, sid in zip(range(len(user.segs), 0, -1), reversed(user.segs)):
+    for i, sid in enumerate(user.segs):
         seg = Seg.objects(sid = sid).first()
         utt = []
         flag_seg = False
@@ -77,9 +90,21 @@ def list():
             if pos.get("flags", {}).get(uid, False):
                 flag_seg = True
         utt = " ".join(utt)
-        segs.append(dict(i = i, sid = seg.sid, oral = seg.oral, utt = utt,
+        segs.append(dict(i = i + 1, sid = seg.sid, oral = seg.oral, utt = utt,
                          flag_seg = flag_seg))
-    return render_template("list.html", segs = segs)
+    total = 0
+    batches = []
+    for batch, batch_size in enumerate(user.batches):
+        # all batches except the last one are by definition done
+        batches.append(dict(batch = batch + 1, assigned = batch_size,
+                            done = batch_size, remaining = 0))
+        total += batch_size
+    # correct stats for the last batch
+    penalty = 1 if user.assigned else 0
+    remaining = total - len(segs) + penalty
+    done = user.batches[-1] - remaining
+    batches[-1].update(done = done, remaining = remaining)
+    return render_template("list.html", segs = segs, batches = batches)
 
 
 @app.route(k("/edit/"))

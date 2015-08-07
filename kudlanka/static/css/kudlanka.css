@@ -80,6 +80,17 @@ thead th:nth-child(4) {
   width: 1em;
 }
 
+.progress {
+  margin-bottom: 0 !important;
+}
+
+.progress-bar[aria-valuenow="0"] {
+  color: gray;
+  min-width: 3%;
+  background: transparent;
+  box-shadow: none;
+}
+
 #user-progress {
   top: 50px;
   position: fixed;
