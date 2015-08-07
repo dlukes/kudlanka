@@ -37,7 +37,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       // flask ensures a trailing slash, so the sid is always second to last
       // when splitting on "/":
       sid = sid[sid.length - 2];
-      request = sid == "edit" ? "/assign/0/" : "/sid/" + sid + "/";
+      request = sid == "edit" ? "/assign/" : "/sid/" + sid + "/";
     }
     $http.get(api + request).
       success(function(data) {
@@ -56,6 +56,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       }).
       error(function(data) {
         $scope.messages = data.messages;
+        $scope.user = data.user;
       });
   }
 
@@ -81,15 +82,16 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       });
   };
 
-  $scope.submitUtt = function(done) {
+  $scope.submitUtt = function() {
     $http.post(api + "/sid/" + $scope.sid + "/", $scope.utt).
       success(function(data) {
         $scope.messages = null;
-        $scope.desambForm.$setPristine();
-        getUtt("/assign/" + done + "/");
+        $scope.disambForm.$setPristine();
+        getUtt("/assign/");
       }).
       error(function(data) {
         $scope.messages = data.messages;
+        $scope.user = data.user;
       });
   };
 

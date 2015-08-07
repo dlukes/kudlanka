@@ -118,36 +118,39 @@ class SegSid(Resource):
 
 
 class SegAssign(Resource):
-    done_err = "Pro každý segment požadujeme max. {} hodnocení."
-    noseg_err = ("V tuto chvíli pro vás není volný žádný segment s celkovým "
-                 "počtem hodnocení {}.")
+    noseg_err = "V tuto chvíli nelze přidělit další segment."
+    done = "Máte hotovo :) Požádejte administrátora o přidělení další várky."
     method_decorators = [user_info]
 
-    def get(self, done):
-        """Assign a segment which has already been disambiguated done times."""
+    def get(self):
         max_done = app.config["MAX_DISAMB_PASSES"]
-        if done >= max_done:
-            abort(403, messages = [["danger",
-                                    SegAssign.done_err.format(max_done)]])
         uid = session["user_id"]
         user = User.objects(id = uid).first()
         if user.assigned:
             seg = Seg.objects(sid = user.assigned).first().to_mongo()
             return seg
+        # if user.assigned == "", then the user has completed all segs in
+        # user.segs and might be done with their batch
+        elif len(user.segs) >= sum(user.batches):
+            abort(404, messages = [["success", SegAssign.done]])
         else:
+            # assign the already rated (i.e. the most rated → order_by) segs
+            # first
             seg = Seg.objects(ambiguous = True,
-                              users__size = done,
-                              users__nin = [uid]).first()
+                              users_size__lt = max_done,
+                              users__nin = [uid]).order_by("-users_size").first()
             try:
-                seg.modify(add_to_set__users = uid)
+                users = set(seg.users + [uid])
+                users_size = len(users)
+                seg.modify(users = users, users_size = users_size)
                 user.modify(assigned = seg.sid, add_to_set__segs = seg.sid)
             except AttributeError:
                 # seg is None
                 abort(400,
                       messages = [["danger",
-                                   SegAssign.noseg_err.format(done)]])
+                                   SegAssign.noseg_err]])
             return seg.to_mongo()
 
 
 api.add_resource(SegSid, k("/api/sid/<string:sid>/"))
-api.add_resource(SegAssign, k("/api/assign/<int:done>/"))
+api.add_resource(SegAssign, k("/api/assign/"))

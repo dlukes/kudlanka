@@ -70,12 +70,15 @@ def xml2dict(xml):
         num = sp.attrib.get("num", "NUM_MISSING")
         for seg in sp:
             utterance = []
+            # even values which do not change (users, users_size) need to be
+            # set in advance, because we will be querying them
             seg_dict = {
                 "num": num,
                 "sid": id + "_" + str(idx),
                 "oral": oral,
                 "utt": utterance,
                 "users": [],
+                "users_size": 0,
                 "ambiguous": False
             }
             doc["segs"].append(seg_dict)

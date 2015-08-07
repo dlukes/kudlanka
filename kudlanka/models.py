@@ -42,7 +42,8 @@ class Seg(db.Document):         # DynamicDocument
         "collection": "segs",
         "indexes": [
             {"fields": ["sid"], "unique": True},
-            {"fields": ["ambiguous", "users"]}
+            {"fields": ["ambiguous", "users", "users_size"]},
+            {"fields": ["users_size"]}
         ]
     }
     sid = db.StringField(max_length = 10, required = True)
@@ -52,6 +53,9 @@ class Seg(db.Document):         # DynamicDocument
     # users to whom the seg has been assigned (irrespective of whether they
     # have comleted the assignment)
     users = db.ListField(required = True)
+    # we need to be able to order by len(users), but MongoDB doesn't support
+    # this kind of query, so len(users) has to be kept track of separately
+    users_size = db.IntField(required = True)
     utt = db.ListField(required = True)
 
     def to_mongo(self, *args, **kwargs):
