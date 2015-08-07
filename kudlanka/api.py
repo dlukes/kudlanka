@@ -1,5 +1,6 @@
 from flask import *
-from flask.ext.restful import Resource, Api, abort
+from flask.ext.restful import Resource, Api
+import flask.ext.restful as rest
 from flask.ext.security import login_required
 
 from kudlanka import app
@@ -11,19 +12,33 @@ from functools import wraps
 api = Api(app, decorators = [login_required])
 
 
+def get_user_info():
+    uid = session["user_id"]
+    user = User.objects(id = uid).first()
+    # there's a difference between a user with len(user.segs) == X and no seg
+    # assigned (that one's done) and a user with len(user.segs) == X and a
+    # pending assignment (that one's still got one seg to go)
+    penalty = 1 if user.assigned else 0
+    done = len(user.segs) - sum(user.batches[:-1]) - penalty
+    return dict(done = done, max = user.batches[-1])
+
+
 # decorate API calls with this to get user info
-def user_info(api_call):
+def with_user_info(api_call):
 
     @wraps(api_call)
     def wrapper(*args, **kwargs):
-        uid = session["user_id"]
-        user = User.objects(id = uid).first()
-        user_info = dict(done = len(user.segs), max = user.batches[-1])
+        # api_call might modify user.segs → call it first
         response = api_call(*args, **kwargs)
-        response.update(user = user_info)
+        response.update(user = get_user_info())
         return response
 
     return wrapper
+
+
+def abort(status_code, **kwargs):
+    kwargs.update(user = get_user_info())
+    return rest.abort(status_code, **kwargs)
 
 
 class SegSid(Resource):
@@ -36,7 +51,7 @@ class SegSid(Resource):
     miss_l_err = "Na {}. vkládané pozici prosím vyberte lemma."
     miss_t_err = "Na {}. vkládané pozici prosím vyberte tag."
     seg_err = "Segment s SID {} neexistuje."
-    method_decorators = [user_info]
+    method_decorators = [with_user_info]
 
     def get(self, sid):
         seg = Seg.objects(sid = sid).first()
@@ -120,7 +135,7 @@ class SegSid(Resource):
 class SegAssign(Resource):
     noseg_err = "V tuto chvíli nelze přidělit další segment."
     done = "Máte hotovo :) Požádejte administrátora o přidělení další várky."
-    method_decorators = [user_info]
+    method_decorators = [with_user_info]
 
     def get(self):
         max_done = app.config["MAX_DISAMB_PASSES"]
