@@ -352,9 +352,9 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
       }
     ];
 
-  // warn the user about losing data if desambForm has been edited
+  // warn the user about losing data if disambForm has been edited
   window.onbeforeunload = function() {
-    if ($scope.desambForm.$dirty) {
+    if ($scope.disambForm.$dirty) {
       return "Pokud opustíte stránku, ztratíte neuloženou práci na aktuálním"
         + " segmentu.";
     } else {
