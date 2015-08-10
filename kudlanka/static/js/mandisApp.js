@@ -36,35 +36,7 @@ app.directive("segProgress", ["$timeout", function ($timeout) {
       });
     }
   };
-}]).directive("setClassWhenAtTop", function ($window) {
-  var $win = angular.element($window);
-  return {
-    restrict: "A",
-    link: function ($scope, panel, attrs) {
-      var offsetTop = panel.offset().top - 71;
-      var topClass = "fix-to-top";
-      var pBody = panel.find(".panel-body");
-      var hPanel = $("#hidden-ref-help");
-      var hPBody = hPanel.find(".panel-body");
-      $win.on("scroll resize", function (e) {
-        var vpHeight = $(window).height() - (71 + 30 + 10);
-        if ($win.scrollTop() >= offsetTop) {
-          panel.addClass(topClass);
-          panel.width(hPanel.width());
-          var hPHeight = hPanel.height();
-          var pHeight = hPHeight < vpHeight ? hPHeight : vpHeight;
-          panel.height(pHeight);
-          pBody.height(hPBody.height());
-        } else {
-          panel.removeClass(topClass);
-          panel.width("auto");
-          panel.height("auto");
-          pBody.height("auto");
-        }
-      });
-    }
-  };
-});
+}]);
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "api";
@@ -417,4 +389,35 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
   // (either when page is first loaded, or when history buttons are clicked)
   window.onload = window.onpopstate = getUtt;
 
+});
+
+$(document).ready(function() {
+  function adjustHelpTag(e) {
+    var $helpTag = $("#help-tag");
+    var mediaWidth = Math.max(document.documentElement.clientWidth,
+                              window.innerWidth || 0);
+    if (mediaWidth >= 992) {
+      // fake multi-column layout with fixed position
+      var $cont = $("#main-ui");
+      var cWidth = $cont.outerWidth();
+      var cMargin = parseInt($cont.css("margin-left"));
+      var mediaHeight = Math.max(document.documentElement.clientHeight,
+                                 window.innerHeight || 0);
+      var footHeight = $("#footer").outerHeight(true);
+      var panelTitleHeight = $(".panel-heading").first().outerHeight(true);
+      // 71 is the distance from top, 20 is the bottom margin on the panel, and
+      // looking at the result, there are still 2 more pixels that need to go
+      var maxPanelBodyHeight = mediaHeight - footHeight
+            - panelTitleHeight - 71 - 20 - 2;
+      $helpTag.outerWidth(.333*cWidth);
+      $helpTag.css("right", cMargin);
+      $helpTag.find(".panel-body").css("max-height", maxPanelBodyHeight);
+    } else {
+      // use default responsive stacked layout
+      $helpTag.outerWidth("");
+      $helpTag.css("right", "");
+    }
+  }
+  $(window).on("resize", adjustHelpTag);
+  adjustHelpTag();
 });
