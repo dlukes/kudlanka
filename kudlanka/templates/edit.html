@@ -139,7 +139,7 @@
       </div>
 
       <div class="col-md-4" ng-show="helpTag">
-        <div class="panel panel-success">
+        <div class="panel panel-success" set-class-when-at-top>
           <div class="panel-heading">
             <h3 class="panel-title">Nápověda k tagu {[ helpTag ]}</h3>
           </div>
@@ -159,9 +159,39 @@
 
     {% if config.DEBUG %}
     <pre>
-  {[ utt | json ]}
+    {[ utt | json ]}
     </pre>
     {% endif %}
+
+  </div>
+
+  <div class="container hidden-ref">
+
+    <!-- this is just a replica of the row with helpTag  with visibility:
+    hidden, used to adjust the size of the actually visible helpTag when fixing
+    it at the top of the viewport -->
+    <div class="row">
+
+      <div class="col-md-8"></div>
+
+      <div class="col-md-4" ng-show="helpTag">
+        <div id="hidden-ref-help" class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">Nápověda k tagu {[ helpTag ]}</h3>
+          </div>
+          <div class="panel-body">
+            <table class="table table-condensed table-striped">
+              <tr ng-repeat="(idx, pos) in postag">
+                <td><b>{[ pos.label ]}</b></td>
+                <td><code>{[ helpTag[idx] ]}</code></td>
+                <td>{[ pos[helpTag[idx]] ]}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
   </div>
 

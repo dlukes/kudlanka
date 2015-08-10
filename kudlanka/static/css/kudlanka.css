@@ -110,3 +110,25 @@ thead th:nth-child(4) {
 #seg-progress {
   top: 57px;
 }
+
+/* fix helpTag to top when scrolling beyond it */
+
+#mandisApp .fix-to-top {
+  position: fixed;
+  top: 71px;
+  /* bottom: 0; */
+  /* height: 100%; */
+  overflow: hidden;
+}
+
+#mandisApp .fix-to-top .panel-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.hidden-ref {
+  visibility: hidden;
+  position: fixed;
+  width: 100%;
+  top: 0;
+}

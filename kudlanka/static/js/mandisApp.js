@@ -36,7 +36,35 @@ app.directive("segProgress", ["$timeout", function ($timeout) {
       });
     }
   };
-}]);
+}]).directive("setClassWhenAtTop", function ($window) {
+  var $win = angular.element($window);
+  return {
+    restrict: "A",
+    link: function ($scope, panel, attrs) {
+      var offsetTop = panel.offset().top - 71;
+      var topClass = "fix-to-top";
+      var pBody = panel.find(".panel-body");
+      var hPanel = $("#hidden-ref-help");
+      var hPBody = hPanel.find(".panel-body");
+      $win.on("scroll resize", function (e) {
+        var vpHeight = $(window).height() - (71 + 30 + 10);
+        if ($win.scrollTop() >= offsetTop) {
+          panel.addClass(topClass);
+          panel.width(hPanel.width());
+          var hPHeight = hPanel.height();
+          var pHeight = hPHeight < vpHeight ? hPHeight : vpHeight;
+          panel.height(pHeight);
+          pBody.height(hPBody.height());
+        } else {
+          panel.removeClass(topClass);
+          panel.width("auto");
+          panel.height("auto");
+          pBody.height("auto");
+        }
+      });
+    }
+  };
+});
 
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "api";
