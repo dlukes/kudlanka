@@ -86,7 +86,7 @@ thead th:nth-child(4) {
   box-shadow: none;
 }
 
-#mandisApp > .nav-progress {
+#mandis-app > .nav-progress {
   position: fixed;
   height: 7px;
   width: 100%;
@@ -105,7 +105,6 @@ thead th:nth-child(4) {
 }
 
 /* fix helpTag to top (responsiveness partially implemented in JS) */
-
 @media screen and (min-width: 992px) {
   #help-tag {
     position: fixed;

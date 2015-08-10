@@ -9,7 +9,7 @@ app.config(function($interpolateProvider, $locationProvider, $httpProvider) {
     return {
       responseError: function(rejection) {
         if(rejection.status == 0) {
-          var mandisApp = document.getElementById("mandisApp");
+          var mandisApp = $("#mandis-app");
           var scope = angular.element(mandisApp).scope();
           scope.messages = [[
             "danger",
