@@ -5,13 +5,6 @@ body {
   background: url("../img/groovepaper2.png");
 }
 
-/* this is needed if the top navbar is being hidden */
-@media (max-width: 979px) {
-  body {
-    padding-top: 0px;
-  }
-}
-
 /* Sign-in */
 
 .form-signin {
