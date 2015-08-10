@@ -23,6 +23,21 @@ app.config(function($interpolateProvider, $locationProvider, $httpProvider) {
   });
 });
 
+app.directive("segProgress", ["$timeout", function ($timeout) {
+  return {
+    link: function ($scope, element, attrs) {
+      $scope.$on("uttManipulated", function () {
+        // You might need this timeout to be sure its run after DOM render.
+        $timeout(function () {
+          $scope.pristine = $("select.ng-pristine").length;
+          $scope.dirty = $("select.ng-dirty").length;
+          $scope.$apply();
+        }, 0, false);
+      });
+    }
+  };
+}]);
+
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "api";
   var sonda, prev, next;
@@ -44,6 +59,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.messages = data.messages;
         $scope.num = data.num;
         $scope.utt = data.utt;
+        $scope.uttManipulated();
         $scope.sid = data.sid;
         $scope.user = data.user;
         var sonda_index = data.sid.split("_");
@@ -94,11 +110,6 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.user = data.user;
       });
   };
-
-  // scroll to top whenever a new message is added
-  $scope.$watch("messages", function() {
-    window.scrollTo(0, 0);
-  });
 
   $scope.firstKey = function(obj) {
     if (obj !== null && typeof obj == "object") {
@@ -351,6 +362,18 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         "B": "obouvidé sloveso"
       }
     ];
+
+  /* Additional UI behavior */
+
+  // update seg progress
+  $scope.uttManipulated = function() {
+    $scope.$broadcast("uttManipulated");
+  };
+
+  // scroll to top whenever a new message is added
+  $scope.$watch("messages", function() {
+    window.scrollTo(0, 0);
+  });
 
   // warn the user about losing data if disambForm has been edited
   window.onbeforeunload = function() {

@@ -7,10 +7,17 @@
 
 <div id="mandisApp" class="ng-cloak" ng-app="mandisApp" ng-controller="mandisCtrl">
 
-  <div id="user-progress" class="progress">
+  <div id="batch-progress" class="progress nav-progress">
     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0"
          aria-valuenow="{[ user.done ]}" aria-valuemax="{[ user.max ]}"
          style="width: {[ user.done / user.max * 100 ]}%">
+    </div>
+  </div>
+
+  <div seg-progress id="seg-progress" class="progress nav-progress">
+    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0"
+         aria-valuenow="{[ dirty ]}" aria-valuemax="{[ pristine + dirty ]}"
+         style="width: {[ dirty / (pristine + dirty) * 100 ]}%">
     </div>
   </div>
 
@@ -77,15 +84,14 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-class="{highlight: pos.flag}"
-                      ng-repeat="pos in utt">
+                  <tr ng-class="{highlight: pos.flag}" ng-repeat="pos in utt">
 
                     <!-- word column -->
                     <td>{[ pos.word ]}</td>
 
                     <!-- lemma column -->
                     <td ng-if="numOfKeys(pos.pool) > 1">
-                      <select ng-model="pos.lemma"
+                      <select ng-model="pos.lemma" ng-change="uttManipulated()"
                               ng-options="lemma as lemma for (lemma, tags) in pos.pool">
                       </select>
                     </td>
@@ -99,7 +105,7 @@
                     <!-- tag column -->
                     <td ng-if="pos.pool[pos.lemma].length > 1">
                       <select ng-model="pos.tag"
-                              ng-change="$parent.$parent.helpTag = pos.tag"
+                              ng-change="$parent.$parent.helpTag = pos.tag; uttManipulated()"
                               ng-options="tag as tag for tag in pos.pool[pos.lemma]">
                       </select>
                     </td>
