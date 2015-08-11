@@ -1,10 +1,3 @@
-# TODO
-
-## Assigning already "done" segments
-
-Remove done parameter from SegAssign API, make it a settable user property
-instead...?
-
 # Dev tips
 
 - use `bower install` for fetching components like bootstrap, jquery, angular
