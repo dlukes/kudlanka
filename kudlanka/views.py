@@ -146,8 +146,10 @@ def admin():
     users = []
     for user in User.objects():
         if user.batches:
+            penalty = 1 if user.assigned else 0
+            done = len(user.segs) - penalty
             users.append(dict(assigned=sum(user.batches),
-                              done=len(user.segs), id=user.email))
+                              done=done, id=user.email))
     form = AssignBatchForm(request.form)
     form.user.choices = [(str(u.id), u.email) for u
                          in User.objects(email__nin=["admin"])]
