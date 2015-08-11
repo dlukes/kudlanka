@@ -59,7 +59,7 @@ as needed.
 
 # License
 
-Copyright © 2015 David Lukeš
+Copyright © 2015 [ÚČNK](http://korpus.cz)/David Lukeš
 
 Distributed under the
 [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.en.html).
