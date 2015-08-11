@@ -1,6 +1,7 @@
 from kudlanka import app
 from flask import url_for
 
+
 def has_no_empty_params(rule):
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
@@ -13,6 +14,6 @@ if app.config["SERVER_NAME"]:
             with app.app_context():
                 print(url_for(rule.endpoint))
 
-app.run(debug = True, host = "::", port = 5000)
+app.run(debug=True, host="::", port=5000)
 
 # the app is then accessible on the LAN via http://trnka:5000

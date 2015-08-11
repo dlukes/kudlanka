@@ -4,7 +4,7 @@ from kudlanka.config import k
 
 import sys
 
-app = Flask(__name__, static_url_path = k("/static"))
+app = Flask(__name__, static_url_path=k("/static"))
 app.config.from_pyfile("config.py")
 try:
     app.config.from_pyfile("../instance/secret_config.py")

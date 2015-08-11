@@ -111,17 +111,18 @@ def xml2dict(xml):
 def parse_argv(argv):
     if argv is None:
         argv = sys.argv[1:]
-    parser = argparse.ArgumentParser(description = "Prepare vertical for import "
-    "into MongoDB for the Kudlanka manual desambiguation webapp.")
-    parser.add_argument("vertical", help = "corpus in vertical format, or - for "
-                        "STDIN", nargs = "?", default = "-")
-    parser.add_argument("-l", "--limit", help = "process up to N documents and "
-                        "exit", type = int, default = None)
-    logging.basicConfig(level = logging.INFO)
+    parser = argparse.ArgumentParser(
+        description="Prepare vertical for import "
+        "into MongoDB for the Kudlanka manual desambiguation webapp.")
+    parser.add_argument("vertical", help="corpus in vertical format, or - for "
+                        "STDIN", nargs="?", default="-")
+    parser.add_argument("-l", "--limit", help="process up to N documents and "
+                        "exit", type=int, default=None)
+    logging.basicConfig(level=logging.INFO)
     return parser.parse_args(argv)
 
 
-def main(argv = None):
+def main(argv=None):
     args = parse_argv(argv)
     for i, doc in enumerate(doc_generator(args.vertical)):
         doc = xml2dict(doc)
