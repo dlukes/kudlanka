@@ -26,12 +26,19 @@ class User(db.Document, UserMixin):
     batches = db.ListField(db.IntField(), default = [])
 
 
-user_datastore = MongoEngineUserDatastore(db, User, Role)
+user_ds = MongoEngineUserDatastore(db, User, Role)
 
 
-# @app.before_first_request
-# def create_user():
-#     user_datastore.create_user(email="testing", password="testing")
+@app.before_first_request
+def init():
+    if not User.objects(email = "admin"):
+        admin = user_ds.create_user(
+            email = "admin",
+            password = app.config.get("ADMIN_PASSWD", "admin"))
+        a_role = user_ds.find_or_create_role(
+            "admin",
+            description = "Admin role.")
+        user_ds.add_role_to_user(admin, a_role)
 
 
 ## Data storage

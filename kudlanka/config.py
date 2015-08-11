@@ -10,7 +10,7 @@ def k(url):
 SECURITY_PASSWORD_HASH = "pbkdf2_sha512"
 SECURITY_LOGIN_URL = k("/login")
 SECURITY_LOGOUT_URL = k("/logout")
-SECURITY_POST_LOGIN_VIEW = k("/edit")
+SECURITY_POST_LOGIN_VIEW = k("/")
 SECURITY_POST_LOGOUT_VIEW = k("/")
 
 # register users manually using mongo shell (see README)

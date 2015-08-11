@@ -1,13 +1,16 @@
 from flask import *
 from flask.ext.security import Security, login_required, current_user, \
-    url_for_security
+    url_for_security, roles_required
 from flask.ext.security.forms import LoginForm
+from flask.ext.wtf import Form
 
 from kudlanka import app
 from kudlanka.config import k
-from kudlanka.models import user_datastore, User, Seg
+from kudlanka.models import user_ds, User, Seg
 
-from wtforms import TextField, PasswordField, SubmitField, BooleanField
+from wtforms import TextField, PasswordField, SubmitField, BooleanField, \
+    SelectField, IntegerField
+from wtforms.validators import InputRequired, NumberRange, ValidationError
 from datetime import date
 
 # Utility functions
@@ -52,23 +55,37 @@ def utility_processor():
                 progress_color = progress_color)
 
 
-# Security routes
+# Forms and security routes
 
 
-class KudlankaLogin(LoginForm):
+class AssignBatchForm(Form):
+    batch_size = IntegerField("Velikost várky", [
+        InputRequired(message = "Vyplňte pole velikost várky."),
+        NumberRange(min = 1, message = "Velikost várky musí být > 0.")])
+    user = SelectField("Uživatel")
+
+    def validate_user(self, field):
+        user = User.objects(id = field.data).first()
+        if len(user.segs) < sum(user.batches):
+            raise ValidationError("Uživatel má již várku přidělenou.")
+
+
+class KudlankaLoginForm(LoginForm):
     email = TextField("Uživatel")
     password = PasswordField("Heslo")
     remember = BooleanField("Zapamatovat přihlášení")
     submit = SubmitField("Přihlásit se")
 
 
-security = Security(app, user_datastore, login_form = KudlankaLogin)
+security = Security(app, user_ds, login_form = KudlankaLoginForm)
 
 # Regular routes
 
 
 @app.route(k("/"))
 def root():
+    if current_user.has_role("admin"):
+        return redirect(url_for("admin"))
     if current_user.is_authenticated():
         return redirect(url_for("edit"))
     else:
@@ -121,3 +138,22 @@ def debug():
         assert False
     else:
         pass
+
+
+@app.route(k("/admin/"), methods = ["GET", "POST"])
+@roles_required("admin")
+def admin():
+    users = []
+    for user in User.objects():
+        if user.batches:
+            users.append(dict(assigned = sum(user.batches),
+                              done = len(user.segs), id = user.email))
+    form = AssignBatchForm(request.form)
+    form.user.choices = [(str(u.id), u.email) for u
+                         in User.objects(email__nin = ["admin"])]
+    if form.validate_on_submit():
+        User.objects(id = form.user.data).first().modify(push__batches =
+                                                         form.batch_size.data)
+        flash("Nová várka úspěšně přidána.", "success")
+        return redirect(url_for("admin"))
+    return render_template("admin.html", users = users, form = form)
