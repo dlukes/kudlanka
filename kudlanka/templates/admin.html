@@ -25,7 +25,7 @@
                 <td>{{ user.assigned - user.done }}</td>
                 <td>
                   <div class="progress">
-                    <div class="progress-bar progress-primary"
+                    <div class="progress-bar {{ progress_color(user) }}"
                          aria-valuenow="{{ user.done }}" aria-valuemin="0"
                          aria-valuemax="{{ user.assigned }}" role="progressbar"
                          style="width: {{ user.done / user.assigned * 100 }}%">
