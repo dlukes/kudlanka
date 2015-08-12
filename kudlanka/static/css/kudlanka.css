@@ -55,6 +55,10 @@ th input {
   width: 100%;
 }
 
+.tag {
+  font-family: monospace;
+}
+
 /* narrow the columns that would otherwise be widened by the default size of*/
 /* their filter input fields */
 thead th:nth-child(1) {
