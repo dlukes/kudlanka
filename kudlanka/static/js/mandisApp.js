@@ -400,7 +400,7 @@ $(document).ready(function() {
       // fake multi-column layout with fixed position
       var $cont = $("#main-ui");
       var cWidth = $cont.outerWidth();
-      var cMargin = parseInt($cont.css("margin-left"));
+      var cMargin = parseInt($cont.offset().left);
       var mediaHeight = Math.max(document.documentElement.clientHeight,
                                  window.innerHeight || 0);
       var footHeight = $("#footer").outerHeight(true);
