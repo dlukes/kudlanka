@@ -42,10 +42,6 @@ body {
 
 /* Mandis */
 
-.highlight {
-  background-color: #f0ad4e !important;
-}
-
 textarea {
   resize: vertical;
   width: 100%;
