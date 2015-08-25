@@ -38,6 +38,20 @@ app.directive("segProgress", ["$timeout", function ($timeout) {
   };
 }]);
 
+app.filter("colorTag", function() {
+  return function(tag) {
+    var $option = $("option:contains(" + tag + ")");
+    if (tag.match(/^.{2}[IMY]/)) {
+      $option.addClass("text-info");
+    } else if (tag.match(/^.{2}F/)) {
+      $option.addClass("text-danger");
+    } else if (tag.match(/^.{2}N/)) {
+      $option.addClass("text-warning");
+    }
+    return tag;
+  };
+});
+
 app.controller("mandisCtrl", function($scope, $http, $location) {
   var api = "api";
   var sonda, prev, next;

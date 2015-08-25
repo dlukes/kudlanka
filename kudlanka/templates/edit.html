@@ -110,7 +110,7 @@
                     <td ng-if="pos.pool[pos.lemma].length > 1" class="tag bg-info">
                       <select ng-model="pos.tag"
                               ng-change="$parent.$parent.helpTag = pos.tag; uttManipulated()"
-                              ng-options="tag as tag for tag in pos.pool[pos.lemma]">
+                              ng-options="tag | colorTag for tag in pos.pool[pos.lemma]">
                       </select>
                     </td>
                     <td ng-if="pos.pool[pos.lemma].length == 1" class="tag">
