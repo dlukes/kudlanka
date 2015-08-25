@@ -76,6 +76,7 @@
               <table class="table table-condensed">
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>word</th>
                     <th>lemma</th>
                     <th>tag</th>
@@ -85,6 +86,9 @@
                 </thead>
                 <tbody>
                   <tr ng-class="{highlight: pos.flag}" ng-repeat="pos in utt">
+
+                    <!-- # column -->
+                    <td class="text-muted">{[ $index + 1 ]}</td>
 
                     <!-- word column -->
                     <td>{[ pos.word ]}</td>
