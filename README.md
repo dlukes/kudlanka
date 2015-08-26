@@ -1,3 +1,11 @@
+# TODO
+
+Auth.auth_ucnk(username, password)
+
+/home/pavelv/ratatosk/auth.py
+
+(využívá ldap3 modul)
+
 # Dev tips
 
 - use `bower install` for fetching components like bootstrap, jquery, angular
