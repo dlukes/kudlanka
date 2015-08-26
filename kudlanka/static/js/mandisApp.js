@@ -406,6 +406,7 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
 });
 
 $(document).ready(function() {
+  // responsive behavior for fixed help-tag div
   function adjustHelpTag(e) {
     var $helpTag = $("#help-tag");
     var mediaWidth = Math.max(document.documentElement.clientWidth,
