@@ -47,30 +47,31 @@ textarea {
   width: 100%;
 }
 
-th input {
-  width: 100%;
-}
-
 .tag {
   font-family: monospace;
 }
 
-/* narrow the columns that would otherwise be widened by the default size of*/
-/* their filter input fields */
-thead th:nth-child(1) {
+/* narrow the columns that would otherwise be widened by the default size of */
+/* their filter input fields... */
+#seg-table thead th:nth-child(1) {
   width: .5em;
 }
 
-thead th:nth-child(2) {
+#seg-table thead th:nth-child(2) {
   width: 5em;
 }
 
-thead th:nth-child(3) {
+#seg-table thead th:nth-child(3) {
   width: 2em;
 }
 
-thead th:nth-child(4) {
+#seg-table thead th:nth-child(4) {
   width: 1em;
+}
+
+/* ... and widen input fields that are too short */
+th input {
+  width: 100%;
 }
 
 /* progress bars */
