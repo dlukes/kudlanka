@@ -12,8 +12,7 @@ import sys
 import argparse
 import logging
 
-# SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-SCRIPT_DIR = os.path.dirname("/home/lukes/src/kudlanka/utils/")
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(SCRIPT_DIR, ".."))
 
 from collections import defaultdict
