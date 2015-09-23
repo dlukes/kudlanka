@@ -6,7 +6,6 @@ Output: either as a single csv file, or as a set of linked html files.
 
 """
 
-from pprint import pprint
 import os
 import sys
 import argparse
