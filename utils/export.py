@@ -87,7 +87,8 @@ def render_html(by_word, outdir):
         table, th, td {
           border: 1px solid lightgray;
         }
-        th {
+        th, td {
+          padding: 1ex;
           text-align: left;
         }
         </style>
