@@ -15,6 +15,8 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(SCRIPT_DIR, ".."))
 
 from collections import defaultdict
+from sortedcontainers import SortedListWithKey, SortedDict
+from textwrap import dedent
 from functools import lru_cache
 from mongoengine import connect
 from kudlanka.config import MONGODB_DB
@@ -57,7 +59,7 @@ def html_output(outdir):
             # - 2 because there will always be at least one lemma and tag
             pos_cont = len(lemmas) + len(tags) + len(flags) + len(notes) - 2
             if pos_cont > 0:
-                by_user = defaultdict(dict)
+                by_user = defaultdict(SortedDict)
                 word = pos["word"]
                 for field in ["lemmas", "tags", "flags", "notes"]:
                     for uid, value in pos.get(field, {}).items():
@@ -71,33 +73,37 @@ def html_output(outdir):
 
 
 def render_html(by_word, outdir):
+
+    def boilerplate(template):
+        return dedent("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="UTF-8">
+        </head>
+        <body>
+        """ + template + """
+        </body>
+        </html>
+        """)
+
     from jinja2 import Template
-    from sortedcontainers import SortedListWithKey
-    cont_html = Template("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-</head>
-<body>
-<ul>
-{% for word in by_cont %}
-    <li><a href="{{ word.word }}__.html">{{ word.word }}</a>: {{ word.cont }}</li>
-{% endfor %}
-</ul>
-</body>
-</html>
-""")
-    word_html = Template("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-</head>
-<body>
-{% for inst in word.inst %}
-<h3><a href="https://trnka.korpus.cz/kudlanka/edit/{{ inst.sid }}">Věta</a></h3>
-<p>
+
+    cont_html = Template(boilerplate(dedent("""
+    <ul>
+    {% for word in by_cont %}
+    <li>
+    <a href="{{ word.word }}__.html">{{ word.word }}</a>: {{ word.cont }}
+    </li>
+    {% endfor %}
+    </ul>
+    """)))
+    word_html = Template(boilerplate(dedent("""
+    {% for inst in word.inst %}
+    <h3>
+    <a href="https://trnka.korpus.cz/kudlanka/edit/{{ inst.sid }}">Věta</a>
+    </h3>
+    <p>
     {% for pos in inst.utt %}
     {% if loop.index - 1 == inst.idx %}
     <span style="color: red">{{ pos }}</span>
@@ -105,22 +111,23 @@ def render_html(by_word, outdir):
     {{ pos }}
     {% endif %}
     {% endfor %}
-</p>
-<h3>Anotace</h3>
-    {% for user, annots in inst.annot.items() %}
-    <h4>{{ user }}</h4>
-    <dl>
-    {% for type, annot in annots.items() %}
-    <dt>{{ type }}</dt>
-    <dd>{{ annot }}</dd>
+    </p>
+    <h3>Anotace</h3>
+    <table>
+    <tbody>
+    {% for user, field2value in inst.annot.items() %}
+    <tr>
+    <td><b>{{ user }}</b></td>
+    {% for value in field2value.values() %}
+    <td><code>{{ value }}</code></td>
     {% endfor %}
-    </dl>
+    </tr>
     {% endfor %}
+    </tbody>
+    </table>
     <hr>
-{% endfor %}
-</body>
-</html>
-""")
+    {% endfor %}
+    """)))
     by_cont = SortedListWithKey(key=lambda dic: -dic["cont"])
     for word, dic in by_word.items():
         dic["word"] = word
