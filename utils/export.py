@@ -85,7 +85,7 @@ def render_html(by_word, outdir):
           border-collapse: collapse;
         }
         table, th, td {
-          border: 1px solid black;
+          border: 1px solid lightgray;
         }
         th {
           text-align: left;
