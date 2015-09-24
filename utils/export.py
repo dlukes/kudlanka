@@ -153,6 +153,8 @@ def render_html(by_word, outdir):
     for word, dic in by_word.items():
         dic["word"] = word
         by_cont.add(dic)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
     with open(os.path.join(outdir, "index.html"), "w") as fh:
         print(cont_html.render(by_cont=by_cont), file=fh)
     for word in by_cont:
