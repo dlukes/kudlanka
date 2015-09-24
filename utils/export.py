@@ -15,7 +15,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(SCRIPT_DIR, ".."))
 
 from collections import defaultdict
-from sortedcontainers import SortedListWithKey, SortedDict
+from sortedcontainers import SortedListWithKey
 from textwrap import dedent
 from functools import lru_cache
 from mongoengine import connect
@@ -59,7 +59,7 @@ def html_output(outdir):
             # - 2 because there will always be at least one lemma and tag
             pos_cont = len(lemmas) + len(tags) + len(flags) + len(notes) - 2
             if pos_cont > 0:
-                by_user = defaultdict(SortedDict)
+                by_user = defaultdict(dict)
                 word = pos["word"]
                 for field in ["lemmas", "tags", "flags", "notes"]:
                     for uid, value in pos.get(field, {}).items():
@@ -80,6 +80,17 @@ def render_html(by_word, outdir):
         <html>
         <head>
         <meta charset="UTF-8">
+        <style>
+        table {
+          border-collapse: collapse;
+        }
+        table, th, td {
+          border: 1px solid black;
+        }
+        th {
+          text-align: left;
+        }
+        </style>
         </head>
         <body>
         """ + template + """
@@ -114,13 +125,23 @@ def render_html(by_word, outdir):
     </p>
     <h3>Anotace</h3>
     <table>
+    <thead>
+    <tr>
+    <th>user</th>
+    <th>lemma</th>
+    <th>tag</th>
+    <th>flag</th>
+    <th>note</th>
+    </thead>
+    </tr>
     <tbody>
     {% for user, field2value in inst.annot.items() %}
     <tr>
     <td><b>{{ user }}</b></td>
-    {% for value in field2value.values() %}
-    <td><code>{{ value }}</code></td>
-    {% endfor %}
+    <td><code>{{ field2value.lemma }}</code></td>
+    <td><code>{{ field2value.tag }}</code></td>
+    <td>{{ field2value.flag }}</td>
+    <td>{{ field2value.note }}</td>
     </tr>
     {% endfor %}
     </tbody>
