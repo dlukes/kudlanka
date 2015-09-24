@@ -139,7 +139,7 @@ def render_html(by_word, outdir):
     <tr>
     <td><b>{{ user }}</b></td>
     <td><code>{{ field2value.lemma }}</code></td>
-    <td><code>{{ field2value.tag }}</code></td>
+    <td style="white-space: nowrap"><code>{{ field2value.tag }}</code></td>
     <td>{{ field2value.flag }}</td>
     <td>{{ field2value.note }}</td>
     </tr>
