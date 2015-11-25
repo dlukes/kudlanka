@@ -28,12 +28,21 @@ def uid2username(id):
     return User.objects(id=id).first().email
 
 
-def csv_output():
+def get_segs(users=None):
+    if users is None:
+        return Seg.objects(users_size__gt=0)
+    else:
+        user_ids = list(map(lambda x: x.get_id(),
+                            User.objects(email__in=users).only("id")))
+        return Seg.objects(users_size__gt=0, users__in=user_ids)
+
+
+def csv_output(users=None):
     import csv
     out = csv.writer(sys.stdout, delimiter="\t")
     fields = ["uid", "sid", "idx", "word", "lemma", "tag", "flag", "note"]
     out.writerow(fields)
-    for seg in Seg.objects(users_size__gt=0):
+    for seg in get_segs(users):
         for idx, pos in enumerate(seg.utt):
             by_user = defaultdict(dict)
             word = pos.get("word", None)
@@ -47,9 +56,9 @@ def csv_output():
                               fields.get("flag", None), fields.get("note", None)])
 
 
-def html_output(outdir):
+def html_output(outdir, users=None):
     by_word = defaultdict(dict)
-    for seg in Seg.objects(users_size__gt=0):
+    for seg in get_segs(users):
         utt = [pos["word"] for pos in seg.utt]
         for idx, pos in enumerate(seg.utt):
             lemmas = set([lemma for lemma in pos.get("lemmas", {}).values()])
@@ -180,6 +189,8 @@ def parse_arguments(argv):
                         choices=["DEBUG", "INFO", "WARNING", "ERROR"])
     parser.add_argument("-f", "--format", help="output format", default="csv",
                         choices=["csv", "html"])
+    parser.add_argument("-u", "--users", help="limit export to user(s), "
+                        "identified by e-mail", nargs="*")
     # parser.add_argument("-n", "--num", type=int, default=25,
     #                     help="sample numeric argument")
     # parser.add_argument("-b", "--bool", action="store_true",
@@ -197,9 +208,9 @@ def main(argv=None):
     args = parse_arguments(argv)
     connect(MONGODB_DB)
     if args.format == "csv":
-        csv_output()
+        csv_output(args.users)
     elif args.format == "html":
-        html_output(args.outdir)
+        html_output(args.outdir, args.users)
     return 0
 
 
