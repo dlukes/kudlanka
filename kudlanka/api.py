@@ -2,6 +2,7 @@ from flask import *
 from flask.ext.restful import Resource, Api
 import flask.ext.restful as rest
 from flask.ext.security import login_required
+from flask.ext.babel import lazy_gettext as _
 
 from kudlanka import app
 from kudlanka.config import k
@@ -42,17 +43,17 @@ def abort(status_code, **kwargs):
 
 
 class SegSid(Resource):
-    err = "Neoprávněný přístup."
-    edit_err = "Nemáte právo editovat tento segment."
-    len_err = (
-        "Délka vkládaného segmentu neodpovídá délce segmentu pro SID {} v "
-        "databázi.")
-    word_err = (
-        "Vkládané slovo {} neodpovídá slovu {} na {}. pozici v segmentu "
-        "s SID {} v databázi.")
-    miss_l_err = "Na {}. vkládané pozici prosím vyberte lemma."
-    miss_t_err = "Na {}. vkládané pozici prosím vyberte tag."
-    seg_err = "Segment s SID {} neexistuje."
+    err = _("Access forbidden.")
+    edit_err = _("You are not allowed to edit this segment.")
+    len_err = _(
+        "The length of the segment being inserted does not match the length "
+        "of segment with SID {0} in the database.")
+    word_err = _(
+        "The word being inserted ({0}) does not match the word ({1}) at "
+        "position {2} in segment with SID {3} in the database.")
+    miss_l_err = _("Pick lemma at position {0}.")
+    miss_t_err = _("Pick tag at position {0}.")
+    seg_err = _("Segment with SID {0} does not exist.")
     method_decorators = [with_user_info]
 
     def get(self, sid):
@@ -79,7 +80,7 @@ class SegSid(Resource):
         seg = Seg.objects(sid=sid).first()
         if uid not in seg.users:
             abort(403,
-                  messages=[["danger", SegSid.edit_err]])
+                  messages=[["danger", SegSid.edit_err.format()]])
         if not len(seg["utt"]) == len(utt):
             abort(400,
                   messages=[["danger", SegSid.len_err.format(sid)]])
@@ -112,17 +113,14 @@ class SegSid(Resource):
                 elif postpos["lemma"] in dbpos["pool"]:
                     dbpos.setdefault("lemmas", {})[uid] = postpos["lemma"]
                 else:
-                    abort(400, messages=[["danger", SegSid.err]])
+                    abort(400, messages=[["danger", SegSid.err.format()]])
                 if postpos["tag"] in dbpos["pool"].get(postpos["lemma"], {}):
                     dbpos.setdefault("tags", {})[uid] = postpos["tag"]
                 else:
-                    abort(400, messages=[["danger", SegSid.err]])
+                    abort(400, messages=[["danger", SegSid.err.format()]])
             else:
-                abort(400,
-                      messages=[["danger",
-                                 SegSid.word_err.format(postpos["word"],
-                                                        dbpos["word"], i,
-                                                        sid)]])
+                error = SegSid.word_err.format(postpos["word"], dbpos["word"], i, sid)
+                abort(400, messages=[["danger", error]])
         seg.modify(utt=seg["utt"])
         # only remove segment assignment if the user is currently posting their
         # most recently asssigned segment, which means they're ready to be
@@ -135,8 +133,8 @@ class SegSid(Resource):
 
 
 class SegAssign(Resource):
-    noseg_err = "V tuto chvíli nelze přidělit další segment."
-    done = "Máte hotovo :) Požádejte administrátora o přidělení další várky."
+    noseg_err = _("Currently unable to assign new segment.")
+    done = _("You're done :) Ask the admin for a new batch.")
     method_decorators = [with_user_info]
 
     def get(self):
@@ -149,7 +147,7 @@ class SegAssign(Resource):
         # if user.assigned == "", then the user has completed all segs in
         # user.segs and might be done with their batch
         elif len(user.segs) >= sum(user.batches):
-            abort(404, messages=[["success", SegAssign.done]])
+            abort(404, messages=[["success", SegAssign.done.format()]])
         else:
             # assign the already rated (i.e. the most rated → order_by) segs
             # first
@@ -163,9 +161,7 @@ class SegAssign(Resource):
                 user.modify(assigned=seg.sid, add_to_set__segs=seg.sid)
             except AttributeError:
                 # seg is None
-                abort(400,
-                      messages=[["danger",
-                                 SegAssign.noseg_err]])
+                abort(400, messages=[["danger", SegAssign.noseg_err.format()]])
             return seg.to_mongo()
 
 

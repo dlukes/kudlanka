@@ -182,7 +182,6 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser(
         description="Export all corpus positions that have been disambiguated "
         "at least once")
-    # parser.add_argument("input_file", nargs="+")
     parser.add_argument("-o", "--outdir", help="output directory", default=".")
     parser.add_argument("-l", "--log", help="logging verbosity",
                         default="DEBUG",
@@ -191,16 +190,8 @@ def parse_arguments(argv):
                         choices=["csv", "html"])
     parser.add_argument("-u", "--users", help="limit export to user(s), "
                         "identified by e-mail", nargs="*")
-    # parser.add_argument("-n", "--num", type=int, default=25,
-    #                     help="sample numeric argument")
-    # parser.add_argument("-b", "--bool", action="store_true",
-    #                     help="sample boolean argument")
     args = parser.parse_args(argv)
     logging.basicConfig(level=args.log)
-    # check number of arguments, verify values, etc.:
-    # if args:
-    #     parser.error('program takes no command-line arguments; '
-    #                  '"%s" ignored.' % (args,))
     return args
 
 

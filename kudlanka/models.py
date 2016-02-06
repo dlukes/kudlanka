@@ -24,6 +24,7 @@ class User(db.Document, UserMixin):
     # to disambiguate) that the user has completed; the last one is the one
     # they are currently working on
     batches = db.ListField(db.IntField(), default=[])
+    locale = db.StringField(max_length=5)
 
 
 user_ds = MongoEngineUserDatastore(db, User, Role)

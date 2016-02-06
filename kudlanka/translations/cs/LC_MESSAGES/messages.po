@@ -1,0 +1,359 @@
+# Czech translations for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-02-06 22:01+0100\n"
+"PO-Revision-Date: 2016-02-06 17:43+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: cs\n"
+"Language-Team: cs <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.2.0\n"
+
+#: kudlanka/__init__.py:35
+msgid "Please provide a SECRET_KEY and a SECURITY_PASSWORD_SALT."
+msgstr "Je třeba v konfiguraci zadat SECRET_KEY a SECURITY_PASSWORD_SALT."
+
+#: kudlanka/api.py:46
+msgid "Access forbidden."
+msgstr "Neoprávněný přístup."
+
+#: kudlanka/api.py:47
+msgid "You are not allowed to edit this segment."
+msgstr "Nemáte právo editovat tento segment."
+
+#: kudlanka/api.py:48
+msgid ""
+"The length of the segment being inserted does not match the length of "
+"segment with SID {0} in the database."
+msgstr ""
+"Délka vkládaného segmentu neodpovídá délce segmentu pro SID {0} v "
+"databázi."
+
+#: kudlanka/api.py:51
+msgid ""
+"The word being inserted ({0}) does not match the word ({1}) at position "
+"{2} in segment with SID {3} in the database."
+msgstr ""
+"Vkládané slovo {0} neodpovídá slovu {1} na {2}. pozici v segmentu s SID "
+"{3} v databázi."
+
+#: kudlanka/api.py:54
+msgid "Pick lemma at position {0}."
+msgstr "Na {0}. vkládané pozici prosím vyberte lemma."
+
+#: kudlanka/api.py:55
+msgid "Pick tag at position {0}."
+msgstr "Na {0}. vkládané pozici prosím vyberte tag."
+
+#: kudlanka/api.py:56
+msgid "Segment with SID {0} does not exist."
+msgstr "Segment s SID {0} neexistuje."
+
+#: kudlanka/api.py:136
+msgid "Currently unable to assign new segment."
+msgstr "V tuto chvíli nelze přidělit další segment."
+
+#: kudlanka/api.py:137
+msgid "You're done :) Ask the admin for a new batch."
+msgstr "Máte hotovo :) Požádejte administrátora o přidělení další várky."
+
+#: kudlanka/config.py:42
+msgid "You do not have permission to view this resource."
+msgstr "Přístup ke čtení odepřen."
+
+#: kudlanka/config.py:44
+#, python-format
+msgid "Thank you. Confirmation instructions have been sent to %(email)s."
+msgstr "Děkujeme. Instrukce k potvrzení byly odeslány na %(email)s."
+
+#: kudlanka/config.py:47
+msgid "Thank you. Your email has been confirmed."
+msgstr "Děkujeme. Váš e-mail byl potvrzen."
+
+#: kudlanka/config.py:49
+msgid "Your email has already been confirmed."
+msgstr "Váš e-mail již byl potvrzen."
+
+#: kudlanka/config.py:51
+msgid "Invalid confirmation token."
+msgstr "Neplatný potvrzovací token."
+
+#: kudlanka/config.py:53
+#, python-format
+msgid "%(email)s is already associated with an account."
+msgstr "K e-mailu %(email)s již účet existuje."
+
+#: kudlanka/config.py:55
+msgid "Password does not match"
+msgstr "Heslo neodpovídá"
+
+#: kudlanka/config.py:57
+msgid "Passwords do not match"
+msgstr "Hesla si neodpovídají"
+
+#: kudlanka/config.py:59
+msgid "Redirections outside the domain are forbidden"
+msgstr "Přesměrování za hranice domény není povoleno"
+
+#: kudlanka/config.py:61
+#, python-format
+msgid "Instructions to reset your password have been sent to %(email)s."
+msgstr "Instrukce k obnovení hesla byly odeslány na %(email)s."
+
+#: kudlanka/config.py:64
+#, python-format
+msgid ""
+"You did not reset your password within %(within)s. New instructions have "
+"been sent to %(email)s."
+msgstr ""
+"Heslo nebylo obnoveno v limitu %(within)s. Nové instrukce byly odeslány "
+"na %(email)s."
+
+#: kudlanka/config.py:68
+msgid "Invalid reset password token."
+msgstr "Neplatný token pro obnovení hesla."
+
+#: kudlanka/config.py:70
+msgid "Email requires confirmation."
+msgstr "E-mail vyžaduje potvrzení."
+
+#: kudlanka/config.py:72
+#, python-format
+msgid "Confirmation instructions have been sent to %(email)s."
+msgstr "Instrukce k potvrzení byly odeslány na %(email)s."
+
+#: kudlanka/config.py:74
+#, python-format
+msgid ""
+"You did not confirm your email within %(within)s. New instructions to "
+"confirm your email have been sent to %(email)s."
+msgstr ""
+"E-mail nebyl potvrzen v limitu %(within)s. Nové instrukce k potvrzení "
+"e-mailu byly odeslány na %(email)s."
+
+#: kudlanka/config.py:78
+#, python-format
+msgid ""
+"You did not login within %(within)s. New instructions to login have been "
+"sent to %(email)s."
+msgstr ""
+"Nepřihlásili jste se v limitu %(within)s. Nové instrukce k přihlášení "
+"byly odeslány na %(email)s."
+
+#: kudlanka/config.py:82
+#, python-format
+msgid "Instructions to login have been sent to %(email)s."
+msgstr "Instrukce k přihlášení byly odeslány na %(email)s."
+
+#: kudlanka/config.py:84
+msgid "Invalid login token."
+msgstr "Neplatný přihlašovací token."
+
+#: kudlanka/config.py:86
+msgid "Account is disabled."
+msgstr "Účet je deaktivovaný."
+
+#: kudlanka/config.py:88
+msgid "Email not provided"
+msgstr "Chybí e-mail"
+
+#: kudlanka/config.py:90
+msgid "Invalid email address"
+msgstr "Neplatný e-mail"
+
+#: kudlanka/config.py:92
+msgid "Password not provided"
+msgstr "Chybí heslo"
+
+#: kudlanka/config.py:94
+msgid "No password is set for this user"
+msgstr "Uživatel nemá nastavené heslo"
+
+#: kudlanka/config.py:96
+msgid "Password must be at least 6 characters"
+msgstr "Heslo musí obsahovat alespoň 6 znaků"
+
+#: kudlanka/config.py:98
+msgid "Specified user does not exist"
+msgstr "Uvedený uživatel neexistuje"
+
+#: kudlanka/config.py:100
+msgid "Invalid password"
+msgstr "Neplatné heslo"
+
+#: kudlanka/config.py:102
+msgid "You have successfuly logged in."
+msgstr "Přihlášení proběhlo v pořádku."
+
+#: kudlanka/config.py:104
+msgid ""
+"You successfully reset your password and you have been logged in "
+"automatically."
+msgstr ""
+"Heslo bylo úspěšně obnoveno a byli jste automaticky přihlášeni."
+
+#: kudlanka/config.py:108
+msgid "Your new password must be different than your previous password."
+msgstr "Vaše nové heslo musí být jiné než to předchozí."
+
+#: kudlanka/config.py:111
+msgid "You successfully changed your password."
+msgstr "Heslo bylo úspěšně změněno."
+
+#: kudlanka/config.py:113
+msgid "Please log in to access this page."
+msgstr "Pro přístup na tuto stránku se prosím přihlašte."
+
+#: kudlanka/config.py:115
+msgid "Please reauthenticate to access this page."
+msgstr "Pro přístup na tuto stránku se prosím reautentifikujte."
+
+#: kudlanka/views.py:79
+msgid "Batch size"
+msgstr "Velikost várky"
+
+#: kudlanka/views.py:80
+msgid "Fill out the batch size field."
+msgstr "Vyplňte pole velikost várky."
+
+#: kudlanka/views.py:81
+msgid "Batch size must be > 0."
+msgstr "Velikost várky musí být > 0."
+
+#: kudlanka/views.py:82 kudlanka/views.py:91 kudlanka/templates/base.html:44
+msgid "User"
+msgstr "Uživatel"
+
+#: kudlanka/views.py:87
+msgid "The user already has a batch assigned."
+msgstr "Uživatel má již várku přidělenou."
+
+#: kudlanka/views.py:92
+msgid "Password"
+msgstr "Heslo"
+
+#: kudlanka/views.py:93
+msgid "Remember me"
+msgstr "Zapamatovat přihlášení"
+
+#: kudlanka/views.py:94
+msgid "Log in"
+msgstr "Přihlásit se"
+
+#: kudlanka/views.py:177
+msgid "New batch successfully added."
+msgstr "Nová várka úspěšně přidána."
+
+#: kudlanka/templates/admin.html:11
+msgid "Users"
+msgstr "Uživatelé"
+
+#: kudlanka/templates/admin.html:17 kudlanka/templates/list.html:25
+msgid "assigned"
+msgstr "přiděleno"
+
+#: kudlanka/templates/admin.html:17 kudlanka/templates/list.html:25
+msgid "remaining"
+msgstr "zbývá"
+
+#: kudlanka/templates/admin.html:17 kudlanka/templates/list.html:25
+msgid "progress"
+msgstr "postup"
+
+#: kudlanka/templates/admin.html:45
+msgid "Assign new batch"
+msgstr "Přidělit novou várku"
+
+#: kudlanka/templates/admin.html:55
+msgid "Assign"
+msgstr "Přidělit"
+
+#: kudlanka/templates/base.html:40
+msgid "Overview"
+msgstr "Přehled"
+
+#: kudlanka/templates/base.html:41
+msgid "Resume work"
+msgstr "Pokračovat v práci"
+
+#: kudlanka/templates/base.html:45
+msgid "Log out"
+msgstr "Odhlásit se"
+
+#: kudlanka/templates/edit.html:41
+msgid "Context"
+msgstr "Kontext"
+
+#: kudlanka/templates/edit.html:68
+msgid "Disambiguation"
+msgstr "Desambiguace"
+
+#: kudlanka/templates/edit.html:76
+msgid "word"
+msgstr "word"
+
+#: kudlanka/templates/edit.html:77
+msgid "lemma"
+msgstr "lemma"
+
+#: kudlanka/templates/edit.html:78
+msgid "tag"
+msgstr "tag"
+
+#: kudlanka/templates/edit.html:79
+msgid "mark"
+msgstr "označit"
+
+#: kudlanka/templates/edit.html:80
+msgid "note"
+msgstr "poznámka"
+
+#: kudlanka/templates/edit.html:119
+msgid "pick lemma first"
+msgstr "vyberte nejprve lemma"
+
+#: kudlanka/templates/edit.html:135
+msgid "Save"
+msgstr "Uložit"
+
+#: kudlanka/templates/edit.html:145
+msgid "Tag help for"
+msgstr "Nápověda k tagu"
+
+#: kudlanka/templates/list.html:18
+msgid "Batches"
+msgstr "Várky"
+
+#: kudlanka/templates/list.html:57
+msgid "Segments processed"
+msgstr "Zpracované segmenty"
+
+#: kudlanka/templates/list.html:63 kudlanka/templates/list.html:79
+msgid "corpus"
+msgstr "korpus"
+
+#: kudlanka/templates/list.html:63 kudlanka/templates/list.html:79
+msgid "segment"
+msgstr "segment"
+
+#: kudlanka/templates/list.html:72
+msgid "yes"
+msgstr "ano"
+
+#: kudlanka/templates/list.html:72
+msgid "no"
+msgstr "ne"
+
+#: kudlanka/templates/security/login_user.html:7
+msgid "Login"
+msgstr "Přihlášení"

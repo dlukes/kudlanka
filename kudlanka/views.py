@@ -3,15 +3,32 @@ from flask.ext.security import Security, login_required, current_user, \
     url_for_security, roles_required
 from flask.ext.security.forms import LoginForm
 from flask.ext.wtf import Form
+from flask.ext.babel import Babel
+from flask.ext.babel import lazy_gettext as _
 
 from kudlanka import app
-from kudlanka.config import k
-from kudlanka.models import user_ds, User, Seg
+from .config import k, LANGUAGES
+from .models import user_ds, User, Seg
 
 from wtforms import TextField, PasswordField, SubmitField, BooleanField, \
     SelectField, IntegerField
 from wtforms.validators import InputRequired, NumberRange, ValidationError
 from datetime import date
+
+# i18n / l10n
+babel = Babel(app)
+
+
+@babel.localeselector
+def get_locale():
+    """i18n / l10n support -- match language reported by browser.
+
+    """
+    # if a user is logged in, honor their locale settings
+    if current_user.is_authenticated():
+        return current_user.locale
+    return request.accept_languages.best_match(LANGUAGES.keys())
+
 
 # Utility functions
 
@@ -51,30 +68,37 @@ def utility_processor():
         else:
             return common + "success"
 
-    return dict(wtf2bs=wtf2bs, footer_date=footer_date, k=k,
-                progress_color=progress_color)
+    utils = locals()
+    utils.update(k=k)
+
+    return utils
+
+
+@app.before_request
+def before_request():
+    g.locale = get_locale()
 
 
 # Forms and security routes
 
 
 class AssignBatchForm(Form):
-    batch_size = IntegerField("Velikost várky", [
-        InputRequired(message="Vyplňte pole velikost várky."),
-        NumberRange(min=1, message="Velikost várky musí být > 0.")])
-    user = SelectField("Uživatel")
+    batch_size = IntegerField(_("Batch size"), [
+        InputRequired(message=_("Fill out the batch size field.")),
+        NumberRange(min=1, message=_("Batch size must be > 0."))])
+    user = SelectField(_("User"))
 
     def validate_user(self, field):
         user = User.objects(id=field.data).first()
         if len(user.segs) < sum(user.batches):
-            raise ValidationError("Uživatel má již várku přidělenou.")
+            raise ValidationError(_("The user already has a batch assigned."))
 
 
 class KudlankaLoginForm(LoginForm):
-    email = TextField("Uživatel")
-    password = PasswordField("Heslo")
-    remember = BooleanField("Zapamatovat přihlášení")
-    submit = SubmitField("Přihlásit se")
+    email = TextField(_("User"))
+    password = PasswordField(_("Password"))
+    remember = BooleanField(_("Remember me"))
+    submit = SubmitField(_("Log in"))
 
 
 security = Security(app, user_ds, login_form=KudlankaLoginForm)
@@ -157,6 +181,6 @@ def admin():
         User.objects(
             id=form.user.data).first().modify(
             push__batches=form.batch_size.data)
-        flash("Nová várka úspěšně přidána.", "success")
+        flash(_("New batch successfully added."), "success")
         return redirect(url_for("admin"))
     return render_template("admin.html", users=users, form=form)

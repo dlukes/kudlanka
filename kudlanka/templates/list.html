@@ -8,6 +8,8 @@
 </script>
 <script src="{{ url_for('static', filename = 'js/list.js') }}">
 </script>
+<script src="{{ url_for('static', filename = 'js/list_' + g.locale + '.js') }}">
+</script>
 
 <div class="container">
 
@@ -15,14 +17,14 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Várky</h3>
+          <h3 class="panel-title">{{ _("Batches") }}</h3>
         </div>
         <div class="panel-body">
           <table id="batch-table"
                  class="table table-striped table-condensed table-bordered dataTable no-footer">
             <thead>
               <tr>
-                <th>#</th><th>přiděleno</th><th>zbývá</th><th>postup</th>
+                <th>#</th><th>{{ _("assigned") }}</th><th>{{ _("remaining")}}</th><th>{{ _("progress") }}</th>
               </tr>
             </thead>
             <tbody>
@@ -54,13 +56,13 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Zpracované segmenty</h3>
+          <h3 class="panel-title">{{ _("Segments processed") }}</h3>
         </div>
         <div class="panel-body">
           <table id="seg-table" class="table table-striped table-bordered dataTable no-footer">
             <thead>
               <tr>
-                <th>#</th><th>SID</th><th>ORAL</th><th>☑</th><th>segment</th>
+                <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
               </tr>
             </thead>
             <tbody>
@@ -69,14 +71,14 @@
                 <td>{{ seg.i }}</td>
                 <td><a href="edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
                 <td>{{ seg.oral }}</td>
-                <td>{{ "ano" if seg.flag_seg else "ne" }}</td>
+                <td>{{ _("yes") if seg.flag_seg else _("no") }}</td>
                 <td>{{ seg.utt }}</td>
               </tr>
               {% endfor %}
             </tbody>
             <tfoot>
               <tr>
-                <th>#</th><th>SID</th><th>ORAL</th><th>☑</th><th>segment</th>
+                <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
               </tr>
             </tfoot>
           </table>
