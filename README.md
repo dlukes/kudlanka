@@ -14,6 +14,22 @@ Auth.auth_ucnk(username, password)
   comes to minification
 - keep track of python deps using `pip freeze >requirements.txt`
 - REST validation with `reqparse` from `flask_restful`
+- refreshing the `segs` database:
+
+```
+$ xzcat data/small.json.xz | sort -R | mongoimport -d ktest -c segs
+```
+
+## i18n
+
+- use `lazy_gettext()` everywhere, it's just simpler
+- the trouble is that lazy strings which have been prepared beforehand (e.g. as
+  class variables, see classes in `kudlanka.api`) need to be somehow evaluated
+  when used, or they'll come out empty; this is especially valid for flash
+  messages
+- **workaround: call `format()` on each string used in this way**, even if it
+  has no placeholders -- then the string gets evaluated in the context of the
+  request
 
 ## Production setup
 
