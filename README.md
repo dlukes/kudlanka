@@ -1,10 +1,29 @@
-# TODO
+# Ideas and TODOs
 
+## Authentication via ÚČNK's LDAP
+
+See `/home/pavelv/ratatosk/auth.py` (dependency: the `ldap3` module):
+
+```python
 Auth.auth_ucnk(username, password)
+```
 
-/home/pavelv/ratatosk/auth.py
+Problem: this probably uses flask-login, whereas I'm using the more integrated
+Flask-Security solution. May require some tinkering. Another problem: I'm not
+just authenticating users, I'm also storing a lot of info per user, so I'd have
+to go hybrid and delegate authentication while keeping the rest in MongoDB.
+Which is probably not worth the hassle at this point.
 
-(využívá ldap3 modul)
+## URL prefix
+
+Grafting the app at arbitrary prefixes is currently handled by wrapping all
+routes in `kudlanka.config.k()`; perhaps it would be easier to just have an
+`@app.before_request` handler which optionally redirects if a prefix is needed
+(`request.host_url + prefix + request.path`). But semantically, building this
+functionality on redirects is just wrong -- redirects should be used for URLs
+which are not under one's control. So it doesn't make sense for the app to
+generate HTML with URLs which are actually invalid and will be redirected from
+when visited.
 
 # Dev tips
 
