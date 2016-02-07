@@ -65,14 +65,17 @@ option -- extensions always have a way of altering individual routes, but they
 might not have an option to set a universal URL prefix. NOTE: remember to also
 `Flask(..., static_url_path = k("/static"))`!
 
-## User registration
+# User registration
 
-Bare views for registration provided by Flask Security are available by
-uncommenting the appropriate config lines, but we don't actually want just
-anyone to be able to register. Just fire up the `mongo kudlanka` shell and add
-users manually with `db.user.insert({email: "username", password: "password"})`,
-or use `inv adduser ...`. The password will be automatically hashed on first
-login.
+Disabled ATM. Users can be added in one of these ways:
+
+1. GUI: The admin user is able to add new users under *Management*.
+2. CLI: Run `inv --help adduser` from the root of the git repository and follow
+   the instructions.
+3. CLI: Fire up the `mongo [dbname]` shell and add users manually with
+   `db.user.insert({email: "username", password: "password"})`,
+
+The password will be automatically hashed on first login.
 
 # Name
 
