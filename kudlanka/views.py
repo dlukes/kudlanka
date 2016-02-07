@@ -58,11 +58,11 @@ def utility_processor():
 @app.route(k("/"))
 def root():
     if current_user.has_role("admin"):
-        return redirect(url_for("admin"))
+        return redirect(url_for("admin"), 303)
     if current_user.is_authenticated():
-        return redirect(url_for("edit"))
+        return redirect(url_for("edit"), 303)
     else:
-        return redirect(url_for_security("login"))
+        return redirect(url_for_security("login"), 303)
 
 
 @app.route(k("/list/"))
@@ -132,12 +132,12 @@ def admin():
             id=ab_form.user.data).first().modify(
             push__batches=ab_form.batch_size.data)
         flash(_("New batch successfully added."), "success")
-        return redirect(url_for("admin"))
+        return redirect(url_for("admin"), 303)
     elif au_form.submit.data and au_form.validate_on_submit():
         user_ds.create_user(email=au_form.email.data,
                             password=au_form.password.data)
         flash(_("New user successfully added."), "success")
-        return redirect(url_for("admin"))
+        return redirect(url_for("admin"), 303)
     return render_template("admin.html", users=users, ab_form=ab_form,
                            au_form=au_form)
 
@@ -150,5 +150,5 @@ def settings():
         flash(_("Settings updated."), "success")
         # redirect is necessary for new locale settings to apply -- start a new
         # request, re-fetch locale settings
-        return redirect(url_for("settings"))
+        return redirect(url_for("settings"), 303)
     return render_template("settings.html", form=form)
