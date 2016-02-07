@@ -20,6 +20,8 @@ Auth.auth_ucnk(username, password)
 $ xzcat data/small.json.xz | sort -R | mongoimport -d ktest -c segs
 ```
 
+- use `invoke` (`inv command ...`) for defining and running repetitive tasks
+
 ## i18n
 
 - use `lazy_gettext()` everywhere, it's just simpler
@@ -68,8 +70,9 @@ might not have an option to set a universal URL prefix. NOTE: remember to also
 Bare views for registration provided by Flask Security are available by
 uncommenting the appropriate config lines, but we don't actually want just
 anyone to be able to register. Just fire up the `mongo kudlanka` shell and add
-users manually with `db.user.insert({email: "username", password:
-"password"})`. The password will be automatically hashed on first login.
+users manually with `db.user.insert({email: "username", password: "password"})`,
+or use `inv adduser ...`. The password will be automatically hashed on first
+login.
 
 # Name
 
