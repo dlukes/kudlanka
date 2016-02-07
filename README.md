@@ -14,6 +14,22 @@ bower install
 inv pybcompile jscompile
 ```
 
+## Configuration
+
+Run this from the root of the repository:
+
+```sh
+mkdir instance
+cat <<EOF >instance/secret_config.py
+SECRET_KEY = "foobarbaz"
+SECURITY_PASSWORD_SALT = "foobarbaz"
+ADMIN_PASSWD = "admin"
+EOF
+```
+
+Now modify the config values in `config.py` and `instance/secret_config.py` to
+your liking.
+
 ## Data import
 
 Convert a corpus with morphological analysis in the vertical format via
