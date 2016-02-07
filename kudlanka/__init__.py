@@ -25,6 +25,11 @@ class CustomJSONEncoder(JSONEncoder):
         return super(CustomJSONEncoder, self).default(obj)
 
 
+class Mail():
+    def send(self, msg):
+        pass
+
+
 app = Flask(__name__, static_url_path=k("/static"))
 app.json_encoder = CustomJSONEncoder
 app.config.from_pyfile("config.py")
@@ -34,6 +39,10 @@ except FileNotFoundError as e:
     print(e)
     print(_("Please provide a SECRET_KEY and a SECURITY_PASSWORD_SALT."))
     sys.exit(1)
+
+# a dummy mail object to satisfy flask security, which keeps wanting to send
+# e-mail to users about their actions
+app.extensions["mail"] = Mail()
 
 # these have to go last (circular imports)
 import kudlanka.views
