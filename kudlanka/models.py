@@ -1,5 +1,5 @@
 from flask.ext.mongoengine import MongoEngine
-from flask.ext.security import MongoEngineUserDatastore, RoleMixin, UserMixin
+from flask.ext.security import RoleMixin, UserMixin, MongoEngineUserDatastore
 
 from kudlanka import app
 

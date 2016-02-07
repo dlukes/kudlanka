@@ -1,35 +1,15 @@
-from flask import *
-from flask.ext.security import Security, login_required, current_user, \
+from flask import abort, flash, redirect, render_template, request, session, \
+    url_for
+from flask.ext.security import login_required, current_user, \
     url_for_security, roles_required
-from flask.ext.security.forms import LoginForm, ChangePasswordForm, EqualTo, \
-    Required, Length
-from flask.ext.wtf import Form
-from flask.ext.babel import Babel
 from flask.ext.babel import lazy_gettext as _
 
 from kudlanka import app
-from .config import k, LANGUAGES
+from .config import k
+from .forms import AddUserForm, AssignBatchForm, SettingsForm
 from .models import user_ds, User, Seg
 
-from wtforms import TextField, PasswordField, SubmitField, BooleanField, \
-    SelectField, IntegerField
-from wtforms.validators import InputRequired, NumberRange, ValidationError
 from datetime import date
-
-# i18n / l10n
-babel = Babel(app)
-
-
-@babel.localeselector
-def get_locale():
-    """i18n / l10n support -- match language reported by browser.
-
-    """
-    # if a user is logged in, honor their locale settings
-    if current_user.is_authenticated():
-        return current_user.locale
-    return request.accept_languages.best_match(LANGUAGES.keys())
-
 
 # Utility functions
 
@@ -73,72 +53,6 @@ def utility_processor():
     utils.update(k=k)
 
     return utils
-
-
-@app.before_request
-def before_request():
-    g.locale = get_locale()
-
-
-# Forms and security routes
-
-
-class AssignBatchForm(Form):
-    batch_size = IntegerField(_("Batch size"), [
-        InputRequired(message=_("Fill out the batch size field.")),
-        NumberRange(min=1, message=_("Batch size must be > 0."))])
-    user = SelectField(_("User"))
-    submit = SubmitField(_("Assign"))
-
-    def validate_user(self, field):
-        user = User.objects(id=field.data).first()
-        if len(user.segs) < sum(user.batches):
-            raise ValidationError(_("The user already has a batch assigned."))
-
-
-class SettingsForm(Form):
-    locale = SelectField(_("Interface language"),
-                         choices=app.config["LANGUAGES"].items())
-
-
-email_required = Required(message='EMAIL_NOT_PROVIDED')
-password_required = Required(message='PASSWORD_NOT_PROVIDED')
-password_length = Length(min=6, max=128, message='PASSWORD_INVALID_LENGTH')
-
-
-class AddUserForm(Form):
-    email = TextField(_("User name (email)"), validators=[email_required])
-    password = PasswordField(
-        _("Password"),
-        validators=[password_required, password_length])
-    password_confirm = PasswordField(
-        _("Retype password"),
-        validators=[EqualTo("password", message="RETYPE_PASSWORD_MISMATCH")])
-    submit = SubmitField(_("Add new user"))
-
-
-class KudlankaLoginForm(LoginForm):
-    email = TextField(_("User"))
-    password = PasswordField(_("Password"))
-    remember = BooleanField(_("Remember me"))
-    submit = SubmitField(_("Log in"))
-
-
-class KudlankaChangePasswordForm(ChangePasswordForm):
-    password = PasswordField(_("Password"), validators=[password_required])
-    new_password = PasswordField(
-        _("New password"),
-        validators=[password_required, password_length])
-    new_password_confirm = PasswordField(
-        _("Retype password"),
-        validators=[EqualTo("new_password", message="RETYPE_PASSWORD_MISMATCH")])
-    submit = SubmitField(_("Change password"))
-
-
-security = Security(app, user_ds, login_form=KudlankaLoginForm,
-                    change_password_form=KudlankaChangePasswordForm)
-
-# Regular routes
 
 
 @app.route(k("/"))

@@ -2,7 +2,7 @@ from flask import Flask
 from flask.json import JSONEncoder
 from flask.ext.babel import lazy_gettext as _
 
-from kudlanka.config import k
+from .config import k
 
 import sys
 
@@ -39,11 +39,13 @@ except FileNotFoundError as e:
     print(e)
     print(_("Please provide a SECRET_KEY and a SECURITY_PASSWORD_SALT."))
     sys.exit(1)
-
 # a dummy mail object to satisfy flask security, which keeps wanting to send
 # e-mail to users about their actions
 app.extensions["mail"] = Mail()
 
-# these have to go last (circular imports)
-import kudlanka.views
+# these have to go last (circular imports) -- anything that's not imported by
+# the modules listed hereunder also needs to be explicitly required here
 import kudlanka.api
+import kudlanka.babel
+import kudlanka.forms
+import kudlanka.views
