@@ -55,3 +55,4 @@ def pybcompile():
 
     """
     run("pybabel compile -d kudlanka/translations")
+    print("Remember that .js files need to be taken care of manually!")
