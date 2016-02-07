@@ -10,80 +10,74 @@
 </script>
 
 <div class="container">
+  <div class="panel-group">
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{ _("Batches") }}</h3>
-        </div>
-        <div class="panel-body">
-          <table id="batch-table"
-                 class="table table-striped table-condensed table-bordered dataTable no-footer">
-            <thead>
-              <tr>
-                <th>#</th><th>{{ _("assigned") }}</th><th>{{ _("remaining")}}</th><th>{{ _("progress") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for batch in batches | reverse %}
-              <tr>
-                <td>{{ batch.batch }}</td>
-                <td>{{ batch.assigned }}</td>
-                <td>{{ batch.remaining }}</td>
-                <td>
-                  <div class="progress">
-                    <div class="progress-bar {{ progress_color(batch) }}"
-                         aria-valuenow="{{ batch.done }}" aria-valuemin="0"
-                         aria-valuemax="{{ batch.assigned }}" role="progressbar"
-                         style="width: {{ batch.done / batch.assigned * 100 }}%">
-                      <span>{{ batch.done }}/{{ batch.assigned }}</span>
-                    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ _("Batches") }}</h3>
+      </div>
+      <div class="panel-body">
+        <table id="batch-table"
+               class="table table-striped table-condensed table-bordered dataTable no-footer">
+          <thead>
+            <tr>
+              <th>#</th><th>{{ _("assigned") }}</th><th>{{ _("remaining")}}</th><th>{{ _("progress") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for batch in batches | reverse %}
+            <tr>
+              <td>{{ batch.batch }}</td>
+              <td>{{ batch.assigned }}</td>
+              <td>{{ batch.remaining }}</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar {{ progress_color(batch) }}"
+                       aria-valuenow="{{ batch.done }}" aria-valuemin="0"
+                       aria-valuemax="{{ batch.assigned }}" role="progressbar"
+                       style="width: {{ batch.done / batch.assigned * 100 }}%">
+                    <span>{{ batch.done }}/{{ batch.assigned }}</span>
                   </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{ _("Segments processed") }}</h3>
-        </div>
-        <div class="panel-body">
-          <table id="seg-table" class="table table-striped table-bordered dataTable no-footer">
-            <thead>
-              <tr>
-                <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for seg in segs | reverse %}
-              <tr>
-                <td>{{ seg.i }}</td>
-                <td><a href="edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
-                <td>{{ seg.oral }}</td>
-                <td>{{ _("yes") if seg.flag_seg else _("no") }}</td>
-                <td>{{ seg.utt }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ _("Segments processed") }}</h3>
+      </div>
+      <div class="panel-body">
+        <table id="seg-table" class="table table-striped table-bordered dataTable no-footer">
+          <thead>
+            <tr>
+              <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for seg in segs | reverse %}
+            <tr>
+              <td>{{ seg.i }}</td>
+              <td><a href="edit/{{ seg.sid }}/">{{ seg.sid }}</a></td>
+              <td>{{ seg.oral }}</td>
+              <td>{{ _("yes") if seg.flag_seg else _("no") }}</td>
+              <td>{{ seg.utt }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>#</th><th>SID</th><th>{{ _("corpus") }}</th><th>☑</th><th>{{_("segment") }}</th>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
-  </div>
 
+  </div>
 </div>
 {% endblock %}

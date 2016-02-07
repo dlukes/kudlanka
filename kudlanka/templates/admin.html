@@ -2,81 +2,75 @@
 {% from "_macros.html" import render_field_with_errors, render_field %}
 {% block content %}
 <div class="container">
+  <div class="panel-group">
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel-group">
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ _("Users") }}</h3>
-          </div>
-          <div class="panel-body">
-            <table class="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>ID</th><th>{{ _("assigned") }}</th><th>{{ _("remaining")}}</th><th>{{ _("progress") }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for user in users %}
-                <tr>
-                  <td>{{ user.id }}</td>
-                  <td>{{ user.assigned }}</td>
-                  <td>{{ user.assigned - user.done }}</td>
-                  <td>
-                    <div class="progress">
-                      <div class="progress-bar {{ progress_color(user) }}"
-                           aria-valuenow="{{ user.done }}" aria-valuemin="0"
-                           aria-valuemax="{{ user.assigned }}" role="progressbar"
-                           style="width: {{ user.done / user.assigned * 100 }}%">
-                        <span>{{ user.done }}/{{ user.assigned }}</span>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ _("Assign new batch") }}</h3>
-          </div>
-          <div class="panel-body">
-            <form action="{{ url_for('admin') }}" method="POST" name="assign-batch-form">
-              <div class="form-group">
-                {{ ab_form.hidden_tag() }}
-                {{ render_field_with_errors(ab_form.user, class_="form-control") }}
-                {{ render_field_with_errors(ab_form.batch_size, class_="form-control") }}
-              </div>
-              {{ render_field(ab_form.submit, class="btn btn-primary pull-right") }}
-            </form>
-          </div>
-        </div>
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ _("Add new user") }}</h3>
-          </div>
-          <div class="panel-body">
-            <form action="{{ url_for('admin') }}" method="POST" name="add-user-form">
-              <div class="form-group">
-                {{ au_form.hidden_tag() }}
-                {{ render_field_with_errors(au_form.email, class_="form-control") }}
-                {{ render_field_with_errors(au_form.password, class_="form-control") }}
-                {{ render_field_with_errors(au_form.password_confirm, class_="form-control") }}
-              </div>
-              {{ render_field(au_form.submit, class="btn btn-primary pull-right") }}
-            </form>
-          </div>
-        </div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ _("Users") }}</h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th><th>{{ _("assigned") }}</th><th>{{ _("remaining")}}</th><th>{{ _("progress") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.assigned }}</td>
+              <td>{{ user.assigned - user.done }}</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar {{ progress_color(user) }}"
+                       aria-valuenow="{{ user.done }}" aria-valuemin="0"
+                       aria-valuemax="{{ user.assigned }}" role="progressbar"
+                       style="width: {{ user.done / user.assigned * 100 }}%">
+                    <span>{{ user.done }}/{{ user.assigned }}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
 
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ _("Assign new batch") }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ url_for('admin') }}" method="POST" name="assign-batch-form">
+          <div class="form-group">
+            {{ ab_form.hidden_tag() }}
+            {{ render_field_with_errors(ab_form.user, class_="form-control") }}
+            {{ render_field_with_errors(ab_form.batch_size, class_="form-control") }}
+          </div>
+          {{ render_field(ab_form.submit, class="btn btn-primary pull-right") }}
+        </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ _("Add new user") }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ url_for('admin') }}" method="POST" name="add-user-form">
+          <div class="form-group">
+            {{ au_form.hidden_tag() }}
+            {{ render_field_with_errors(au_form.email, class_="form-control") }}
+            {{ render_field_with_errors(au_form.password, class_="form-control") }}
+            {{ render_field_with_errors(au_form.password_confirm, class_="form-control") }}
+          </div>
+          {{ render_field(au_form.submit, class="btn btn-primary pull-right") }}
+        </form>
+      </div>
+    </div>
+
+  </div>
 </div>
 {% endblock %}
