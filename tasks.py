@@ -34,7 +34,7 @@ def pybextract():
 
 @task
 def pybinit(lang):
-    """Initialize locatlization into language lang.
+    """Initialize localization into language lang.
 
     """
     comm = "pybabel init -i messages.pot -d kudlanka/translations -l {}"
