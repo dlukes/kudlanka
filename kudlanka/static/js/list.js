@@ -6,6 +6,22 @@ $(document).ready(function () {
     $(this).html('<input type="text" placeholder="' + title + '" />');
   });
 
+  var l10n;
+  if (LOCALE === 'cs') {
+    l10n = 'Czech.lang';
+  } else {
+    l10n = 'English.lang';
+  }
+  console.log(l10n);
+  l10nUrl = ROOT + '/static/vendor/datatables-plugins/i18n/' + l10n;
+  var dtInit = {
+    order: [],
+    language: {
+      url: l10nUrl
+    }
+  };
+  console.log(dtInit.language);
+
   // initialize data table
   var dt = $("#seg-table").DataTable(dtInit);
   dtInit.pageLength = 5;

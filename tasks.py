@@ -1,3 +1,4 @@
+import os
 from invoke import run, task
 
 # user management
@@ -56,3 +57,21 @@ def pybcompile():
     """
     run("pybabel compile -d kudlanka/translations")
     print("Remember that .js files need to be taken care of manually!")
+
+
+@task
+def jscompile():
+    """Compile various javascript files.
+
+    At the moment, this includes:
+
+    - compiling DataTables l10n files
+
+    """
+    dtp = "kudlanka/static/vendor/datatables-plugins/i18n"
+    for dirname, _, files in os.walk(dtp):
+        for file in files:
+            path = os.path.join(dirname, file)
+            run("tail -n+8 {} >tmp".format(path))
+            run("mv tmp {}".format(path))
+    run("rm -f tmp")
