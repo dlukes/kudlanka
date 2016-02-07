@@ -1,3 +1,48 @@
+# Overview
+
+## Installation
+
+First of all, you need access to a MongoDB instance. Then:
+
+```sh
+# optionally make a virtualenv with python3; if not, then replace `pip` with
+# `pip3`
+git clone <this_repository>
+cd kudlanka
+pip install -r requirements.txt
+bower install
+inv pybcompile jscompile
+```
+
+## Data import
+
+Convert a corpus with morphological analysis in the vertical format via
+`utils/vert2json.py`. Import it into MongoDB (`vert2json.py` will give a hint as
+to how to do that). At this point, the app itself is ready for a spin with
+`python runserver.py`.
+
+## User registration
+
+Disabled ATM. Users can be added in one of these ways:
+
+1. GUI: The admin user is able to add new users under *Management*.
+2. CLI: Run `inv --help adduser` from the root of the git repository and follow
+   the instructions.
+3. CLI: Fire up the `mongo [dbname]` shell and add users manually with
+   `db.user.insert({email: "username", password: "password"})`,
+
+The password will be automatically hashed on first login.
+
+## Name
+
+Manuální disambiguace → mandis → mantis religiosa → kudlanka
+
+## Requirements
+
+Python3, MongoDB + see `bower.json` for client-side and `requirements.txt` for
+server-side. Scripts under `utils/` may have additional dependencies, install as
+needed.
+
 # Ideas and TODOs
 
 ## Authentication via ÚČNK's LDAP
@@ -83,28 +128,6 @@ For this reason, explicitly wrapping every route in `k()` is probably the best
 option -- extensions always have a way of altering individual routes, but they
 might not have an option to set a universal URL prefix. NOTE: remember to also
 `Flask(..., static_url_path = k("/static"))`!
-
-# User registration
-
-Disabled ATM. Users can be added in one of these ways:
-
-1. GUI: The admin user is able to add new users under *Management*.
-2. CLI: Run `inv --help adduser` from the root of the git repository and follow
-   the instructions.
-3. CLI: Fire up the `mongo [dbname]` shell and add users manually with
-   `db.user.insert({email: "username", password: "password"})`,
-
-The password will be automatically hashed on first login.
-
-# Name
-
-Manuální disambiguace → mandis → mantis religiosa → kudlanka
-
-# Requirements
-
-See `bower.json` for client-side and `requirements.txt` for
-server-side. Scripts under `utils/` may have additional dependencies, install
-as needed.
 
 # License
 
