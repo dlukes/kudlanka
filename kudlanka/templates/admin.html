@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import render_field_with_errors %}
+{% from "_macros.html" import render_field_with_errors, render_field %}
 {% block content %}
 <div class="container">
 
@@ -45,15 +45,30 @@
           <h3 class="panel-title">{{ _("Assign new batch") }}</h3>
         </div>
         <div class="panel-body">
-          <form action="{{ url_for('admin') }}" method="POST"
-                name="assign-batch-form">
-            {{ form.hidden_tag() }}
-            {{ render_field_with_errors(form.user, class_ = "form-control") }}
-            {{ render_field_with_errors(form.batch_size, class_ = "form-control") }}
-            <br/>
-            <button type="submit" class="btn btn-primary pull-right">
-              {{ _("Assign") }}
-            </button>
+          <form action="{{ url_for('admin') }}" method="POST" name="assign-batch-form">
+            <div class="form-group">
+              {{ ab_form.hidden_tag() }}
+              {{ render_field_with_errors(ab_form.user, class_="form-control") }}
+              {{ render_field_with_errors(ab_form.batch_size, class_="form-control") }}
+            </div>
+            {{ render_field(ab_form.submit, class="btn btn-primary pull-right") }}
+          </form>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{ _("Add new user") }}</h3>
+        </div>
+        <div class="panel-body">
+          <form action="{{ url_for('admin') }}" method="POST" name="add-user-form">
+            <div class="form-group">
+              {{ au_form.hidden_tag() }}
+              {{ render_field_with_errors(au_form.email, class_="form-control") }}
+              {{ render_field_with_errors(au_form.password, class_="form-control") }}
+              {{ render_field_with_errors(au_form.password_confirm, class_="form-control") }}
+            </div>
+            {{ render_field(au_form.submit, class="btn btn-primary pull-right") }}
           </form>
         </div>
       </div>

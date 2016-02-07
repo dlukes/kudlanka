@@ -1,7 +1,8 @@
 from flask import *
 from flask.ext.security import Security, login_required, current_user, \
     url_for_security, roles_required
-from flask.ext.security.forms import LoginForm
+from flask.ext.security.forms import LoginForm, ChangePasswordForm, EqualTo, \
+    Required, Length
 from flask.ext.wtf import Form
 from flask.ext.babel import Babel
 from flask.ext.babel import lazy_gettext as _
@@ -87,11 +88,33 @@ class AssignBatchForm(Form):
         InputRequired(message=_("Fill out the batch size field.")),
         NumberRange(min=1, message=_("Batch size must be > 0."))])
     user = SelectField(_("User"))
+    submit = SubmitField(_("Assign"))
 
     def validate_user(self, field):
         user = User.objects(id=field.data).first()
         if len(user.segs) < sum(user.batches):
             raise ValidationError(_("The user already has a batch assigned."))
+
+
+class SettingsForm(Form):
+    locale = SelectField(_("Interface language"),
+                         choices=app.config["LANGUAGES"].items())
+
+
+email_required = Required(message='EMAIL_NOT_PROVIDED')
+password_required = Required(message='PASSWORD_NOT_PROVIDED')
+password_length = Length(min=6, max=128, message='PASSWORD_INVALID_LENGTH')
+
+
+class AddUserForm(Form):
+    email = TextField(_("User name (email)"), validators=[email_required])
+    password = PasswordField(
+        _("Password"),
+        validators=[password_required, password_length])
+    password_confirm = PasswordField(
+        _("Retype password"),
+        validators=[EqualTo("password", message="RETYPE_PASSWORD_MISMATCH")])
+    submit = SubmitField(_("Add new user"))
 
 
 class KudlankaLoginForm(LoginForm):
@@ -101,7 +124,19 @@ class KudlankaLoginForm(LoginForm):
     submit = SubmitField(_("Log in"))
 
 
-security = Security(app, user_ds, login_form=KudlankaLoginForm)
+class KudlankaChangePasswordForm(ChangePasswordForm):
+    password = PasswordField(_("Password"), validators=[password_required])
+    new_password = PasswordField(
+        _("New password"),
+        validators=[password_required, password_length])
+    new_password_confirm = PasswordField(
+        _("Retype password"),
+        validators=[EqualTo("new_password", message="RETYPE_PASSWORD_MISMATCH")])
+    submit = SubmitField(_("Change password"))
+
+
+security = Security(app, user_ds, login_form=KudlankaLoginForm,
+                    change_password_form=KudlankaChangePasswordForm)
 
 # Regular routes
 
@@ -161,7 +196,7 @@ def debug():
     if app.config["DEBUG"]:
         assert False
     else:
-        pass
+        abort(403, "Debug mode disabled.")
 
 
 @app.route(k("/admin/"), methods=["GET", "POST"])
@@ -174,13 +209,32 @@ def admin():
             done = len(user.segs) - penalty
             users.append(dict(assigned=sum(user.batches),
                               done=done, id=user.email))
-    form = AssignBatchForm(request.form)
-    form.user.choices = [(str(u.id), u.email) for u
-                         in User.objects(email__nin=["admin"])]
-    if form.validate_on_submit():
+    ab_form = AssignBatchForm(prefix="ab")
+    ab_form.user.choices = [(str(u.id), u.email) for u
+                            in User.objects(email__nin=["admin"])]
+    au_form = AddUserForm(prefix="au")
+    if ab_form.submit.data and ab_form.validate_on_submit():
         User.objects(
-            id=form.user.data).first().modify(
-            push__batches=form.batch_size.data)
+            id=ab_form.user.data).first().modify(
+            push__batches=ab_form.batch_size.data)
         flash(_("New batch successfully added."), "success")
         return redirect(url_for("admin"))
-    return render_template("admin.html", users=users, form=form)
+    elif au_form.submit.data and au_form.validate_on_submit():
+        user_ds.create_user(email=au_form.email.data,
+                            password=au_form.password.data)
+        flash(_("New user successfully added."), "success")
+        return redirect(url_for("admin"))
+    return render_template("admin.html", users=users, ab_form=ab_form,
+                           au_form=au_form)
+
+
+@app.route(k("/settings"), methods=["GET", "POST"])
+def settings():
+    form = SettingsForm(request.form, locale=current_user.locale)
+    if form.validate_on_submit():
+        current_user.update(set__locale=form.locale.data)
+        flash(_("Settings updated."), "success")
+        # redirect is necessary for new locale settings to apply -- start a new
+        # request, re-fetch locale settings
+        return redirect(url_for("settings"))
+    return render_template("settings.html", form=form)

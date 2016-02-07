@@ -19,7 +19,7 @@ MONGODB_PORT = 27017
 # SERVER_NAME = "trnka.korpus.cz:5000"
 # APPLICATION_ROOT = "/"
 
-LANGUAGES = dict(en="English", cs="Czech")
+LANGUAGES = dict(en=_("English"), cs=_("Czech"))
 
 # how many users should rate each segment
 MAX_DISAMB_PASSES = 2
@@ -30,12 +30,9 @@ SECURITY_LOGIN_URL = k("/login")
 SECURITY_LOGOUT_URL = k("/logout")
 SECURITY_POST_LOGIN_VIEW = k("/")
 SECURITY_POST_LOGOUT_VIEW = k("/")
-
-# register users manually using mongo shell (see README)
-# SECURITY_SEND_REGISTER_EMAIL = False
-# SECURITY_REGISTERABLE = True
-# SECURITY_REGISTER_URL = k("/register")
-# SECURITY_POST_REGISTER_VIEW = k("/edit")
+SECURITY_CHANGEABLE = True
+SECURITY_POST_CHANGE_VIEW = k("/settings")
+SECURITY_CHANGE_URL = k("/settings/passwd")
 
 # security-related strings for i18n / l10n
 SECURITY_MSG_UNAUTHORIZED = (

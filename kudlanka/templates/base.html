@@ -36,12 +36,15 @@
         </div>
         {% if current_user.is_authenticated() %}
         <div id="navbar" class="navbar-collapse collapse">
-          {% if not current_user.has_role("admin") %}
           <ul class="nav navbar-nav">
+            {% if current_user.has_role("admin") %}
+            <li><a href="admin">{{ _("Management") }}</a></li>
+            {% else %}
             <li><a href="list">{{ _("Overview") }}</a></li>
             <li><a href="edit">{{ _("Resume work") }}</a></li>
+            {% endif %}
+            <li><a href="settings">{{ _("Settings") }}</a></li>
           </ul>
-          {% endif %}
           <ul class="nav navbar-nav navbar-right">
             <li><a class="small">{{ _("User") }}: {{ current_user.email }}</a></li>
             <li><a href="logout">{{ _("Log out") }}</a></li>
