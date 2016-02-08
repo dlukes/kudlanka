@@ -5,6 +5,23 @@ body {
   background: url("../img/groovepaper2.png");
 }
 
+/* Make footer stick to bottom -- see http://ryanfait.com/html5-sticky-footer */
+
+html, body {
+  height: 100%;
+}
+
+#wrapper {
+  min-height: 100%;
+  /* the bottom margin is the negative value of the footer's height */
+  margin: 0 auto -50px;
+}
+
+footer, #push-footer {
+  /* #push-footer must be the same height as footer */
+  height: 50px;
+}
+
 /* Sign-in */
 
 .form-signin {
