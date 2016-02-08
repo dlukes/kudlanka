@@ -9,6 +9,7 @@ from .config import k
 from .forms import AddUserForm, AssignBatchForm, SettingsForm
 from .models import user_ds, User, Seg
 
+import os
 from datetime import date
 
 # Utility functions
@@ -152,3 +153,16 @@ def settings():
         # request, re-fetch locale settings
         return redirect(url_for("settings"), 303)
     return render_template("settings.html", form=form)
+
+
+@app.route(k("/docs/<string:locale>/<string:page>"))
+def docs(locale, page):
+    path = os.path.join("static", "docs", locale, page)
+    if not os.path.isfile(path):
+        path = os.path.join("static", "docs", "default", page)
+    try:
+        with app.open_resource(path) as fh:
+            md = fh.read().decode("utf-8")
+        return render_template("docs.html", md=md)
+    except FileNotFoundError:
+        abort(404, _("Requested document does not exist."))
