@@ -5,7 +5,9 @@ from flask.ext.babel import lazy_gettext as _
 
 from .config import k
 
+import os
 import sys
+from git import Repo
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -31,15 +33,25 @@ class Mail():
         pass
 
 
+def get_version():
+    repo = Repo(search_parent_directories=True)
+    tag = repo.tags[-1]
+    head = repo.head.commit
+    if tag.commit == head:
+        return dict(type="tag", value=tag.name)
+    return dict(type="commit", value=head.hexsha)
+
+
 app = Flask(__name__, static_url_path=k("/static"))
 app.json_encoder = CustomJSONEncoder
 app.config.from_pyfile("config.py")
 try:
-    app.config.from_pyfile("../instance/secret_config.py")
+    app.config.from_pyfile(os.path.join("..", "instance", "secret_config.py"))
 except FileNotFoundError as e:
     print(e)
     print(_("Please provide a SECRET_KEY and a SECURITY_PASSWORD_SALT."))
     sys.exit(1)
+app.config["VERSION"] = get_version()
 Markdown(app)
 # a dummy mail object to satisfy flask security, which keeps wanting to send
 # e-mail to users about their actions

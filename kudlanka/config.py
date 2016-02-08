@@ -24,6 +24,10 @@ LANGUAGES = dict(en=_("English"), cs=_("Czech"))
 # how many users should rate each segment
 MAX_DISAMB_PASSES = 2
 
+# GitHub repo agains which app versions should be linked to in views and issues
+# reported
+GITHUB = "https://github.com/dlukes/kudlanka"
+
 # Flask Security config
 SECURITY_PASSWORD_HASH = "pbkdf2_sha512"
 SECURITY_LOGIN_URL = k("/login")

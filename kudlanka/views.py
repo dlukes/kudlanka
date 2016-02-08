@@ -1,10 +1,11 @@
-from flask import abort, flash, redirect, render_template, request, session, \
-    url_for
+from flask import abort, flash, g, redirect, render_template, request, \
+    session, url_for
 from flask.ext.security import login_required, current_user, \
     url_for_security, roles_required
 from flask.ext.babel import lazy_gettext as _
 
 from kudlanka import app
+from .babel import get_locale
 from .config import k
 from .forms import AddUserForm, AssignBatchForm, SettingsForm
 from .models import user_ds, User, Seg
@@ -54,6 +55,16 @@ def utility_processor():
     utils.update(k=k)
 
     return utils
+
+
+@app.before_request
+def before_request():
+    g.locale = get_locale()
+    g.version = app.config["VERSION"]
+    g.github = app.config["GITHUB"]
+
+
+# Routes
 
 
 @app.route(k("/"))

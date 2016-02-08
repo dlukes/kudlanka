@@ -1,4 +1,4 @@
-from flask import g, request
+from flask import request
 from flask.ext.babel import Babel
 from flask.ext.security import current_user
 
@@ -17,8 +17,3 @@ def get_locale():
         return current_user.locale
     langs = app.config["LANGUAGES"]
     return request.accept_languages.best_match(langs.keys())
-
-
-@app.before_request
-def before_request():
-    g.locale = get_locale()

@@ -1,3 +1,12 @@
+{% macro version_info(type=none, value="unknown") -%}
+{% if type == "tag" %}
+<a target="_blank" href="{{ g.github + '/releases/tag/' + value }}">{{ value }}</a>
+{% elif type == "commit" %}
+<a target="_blank" href="{{ g.github + '/commit/' + value }}">{{ value | truncate(7, end="") }}</a>
+{% else %}
+{{ _("unknown") }}
+{% endif %}
+{%- endmacro %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -66,9 +75,19 @@
 
     <div id="footer" class="container">
       <footer>
-        <p>&copy;
+        <p class="text-muted">
+          <a target="_blank" href="{{ g.github }}">Kudlanka</a>:
+          {{ _("A manual morphological disambiguation tool.") }}
+          |
+          {{ _("Version") }}: {{ version_info(g.version.type, g.version.value) }}
+          |
+          <a target="_blank" href="{{ g.github + '/issues/new' }}">{{ _("Report an error") }}</a>
+          {{ _("(please include version info).") }}
+          |
+          &copy;
           <a href="http://korpus.cz" target="_blank">ÚČNK</a>,
-          {{ footer_date() | safe }}</p>
+          {{ footer_date() | safe }}
+        </p>
       </footer>
     </div>
 
