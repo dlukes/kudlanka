@@ -1,5 +1,10 @@
 # Overview
 
+Kudlanka is a webapp for streamlined collaborative manual morphological disambiguation
+of language corpora. Here's what it looks like:
+
+![Kudlanka in action](./kudlanka.png)
+
 ## Installation
 
 First of all, you need access to a MongoDB instance. Then:
