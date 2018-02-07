@@ -1,7 +1,7 @@
 from flask_security import Security
 from flask_security.forms import LoginForm, ChangePasswordForm, EqualTo, \
     Required, Length
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from flask_babel import lazy_gettext as _
 
 from kudlanka import app
@@ -18,7 +18,7 @@ password_length = Length(min=6, max=128, message='PASSWORD_INVALID_LENGTH')
 # Forms
 
 
-class AssignBatchForm(Form):
+class AssignBatchForm(FlaskForm):
     batch_size = IntegerField(_("Batch size"), [
         InputRequired(message=_("Fill out the batch size field.")),
         NumberRange(min=1, message=_("Batch size must be > 0."))])
@@ -31,12 +31,12 @@ class AssignBatchForm(Form):
             raise ValidationError(_("The user already has a batch assigned."))
 
 
-class SettingsForm(Form):
+class SettingsForm(FlaskForm):
     locale = SelectField(_("Interface language"),
                          choices=app.config["LANGUAGES"].items())
 
 
-class AddUserForm(Form):
+class AddUserForm(FlaskForm):
     email = TextField(_("User name (email)"), validators=[email_required])
     password = PasswordField(
         _("Password"),
