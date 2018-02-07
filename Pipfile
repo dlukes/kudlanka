@@ -19,5 +19,5 @@ gitpython = "*"
 
 [dev-packages]
 
-invoke = "*"
+invoke = "==0.12.*"
 lxml = "*"
