@@ -134,3 +134,11 @@ th input {
     overflow-x: hidden;
   }
 }
+
+@media (min-width: 768px) and (max-width: 992px) {
+  /* push content down to compensate for navbar temporarily occupying two lines at this screen width
+   before collapsing below 768px */
+  body {
+    padding-top: 106px;
+  }
+}

@@ -55,7 +55,7 @@ class Seg(db.Document):         # or DynamicDocument
         ]
     }
     sid = db.StringField(max_length=10, required=True)
-    oral = db.StringField(max_length=10, required=True)
+    corpus = db.StringField(max_length=10, required=True)
     num = db.StringField(max_length=10, required=True)
     ambiguous = db.StringField(required=True)
     # users to whom the seg has been assigned (irrespective of whether they

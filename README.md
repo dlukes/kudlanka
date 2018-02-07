@@ -150,6 +150,10 @@ option -- extensions always have a way of altering individual routes, but they
 might not have an option to set a universal URL prefix. NOTE: remember to also
 `Flask(..., static_url_path = k("/static"))`!
 
+# Credits
+
+Icons are by [Glyphicons](http://glyphicons.com/).
+
 # License
 
 Copyright © 2015 [ÚČNK](http://korpus.cz)/David Lukeš

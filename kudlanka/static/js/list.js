@@ -12,7 +12,6 @@ $(document).ready(function () {
   } else {
     l10n = 'English.lang';
   }
-  console.log(l10n);
   l10nUrl = ROOT + '/static/vendor/datatables-plugins/i18n/' + l10n;
   var dtInit = {
     order: [],
@@ -20,7 +19,6 @@ $(document).ready(function () {
       url: l10nUrl
     }
   };
-  console.log(dtInit.language);
 
   // initialize data table
   var dt = $("#seg-table").DataTable(dtInit);

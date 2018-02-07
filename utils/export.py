@@ -182,7 +182,8 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser(
         description="Export all corpus positions that have been disambiguated "
         "at least once")
-    parser.add_argument("-o", "--outdir", help="output directory", default=".")
+    parser.add_argument("-o", "--outdir", help="output directory (only for "
+                        "HTML output, csv goes to STDOUT)", default=".")
     parser.add_argument("-l", "--log", help="logging verbosity",
                         default="DEBUG",
                         choices=["DEBUG", "INFO", "WARNING", "ERROR"])

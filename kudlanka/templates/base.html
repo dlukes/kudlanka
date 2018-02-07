@@ -52,17 +52,47 @@
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               {% if current_user.has_role("admin") %}
-              <li><a href="admin">{{ _("Management") }}</a></li>
+              <li>
+                <a href="admin">
+                  <span class="glyphicon glyphicon-folder-open"></span>
+                  {{ _("Management") }}
+                </a>
+              </li>
               {% else %}
-              <li><a href="list">{{ _("Overview") }}</a></li>
-              <li><a href="edit">{{ _("Resume work") }}</a></li>
+              <li>
+                <a href="list">
+                  <span class="glyphicon glyphicon-th-list"></span>
+                  {{ _("Overview") }}
+                </a>
+              </li>
+              <li>
+                <a href="edit">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                  {{ _("Resume work") }}
+                </a>
+              </li>
               {% endif %}
-              <li><a href="settings">{{ _("Settings") }}</a></li>
+              <li>
+                <a href="settings">
+                  <span class="glyphicon glyphicon-cog"></span>
+                  {{ _("Settings") }}
+                </a>
+              </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li><a class="small">{{ _("User") }}: {{ current_user.email }}</a></li>
-              <li><a href="docs/{{ g.locale }}/index.md">{{ _("Documentation") }}</a></li>
-              <li><a href="logout">{{ _("Log out") }}</a></li>
+              <li>
+                <a href="docs/{{ g.locale }}/index.md">
+                  {{ _("Documentation") }}
+                  <span class="glyphicon glyphicon-book"></span>
+                </a>
+              </li>
+              <li>
+                <a href="logout">
+                  {{ _("Log out") }}
+                  <span class="glyphicon glyphicon-log-out"></span>
+                </a>
+              </li>
             </ul>
           </div>
           {% endif %}

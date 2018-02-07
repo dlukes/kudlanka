@@ -59,8 +59,7 @@ class SegSid(Resource):
     def get(self, sid):
         seg = Seg.objects(sid=sid).first()
         if seg is None:
-            abort(400,
-                  messages=[["danger", SegSid.seg_err.format(sid)]])
+            abort(400, messages=[["danger", SegSid.seg_err.format(sid)]])
         seg = seg.to_mongo()
         uid = session["user_id"]
         for pos in seg["utt"]:
@@ -79,20 +78,16 @@ class SegSid(Resource):
         user = User.objects(id=uid).first()
         seg = Seg.objects(sid=sid).first()
         if uid not in seg.users:
-            abort(403,
-                  messages=[["danger", SegSid.edit_err.format()]])
+            abort(403, messages=[["danger", SegSid.edit_err.format()]])
         if not len(seg["utt"]) == len(utt):
-            abort(400,
-                  messages=[["danger", SegSid.len_err.format(sid)]])
+            abort(400, messages=[["danger", SegSid.len_err.format(sid)]])
         for i, dbpos, postpos in zip(range(1, len(seg["utt"]) + 1),
                                      seg["utt"],
                                      utt):
             if not postpos.get("lemma", False):
-                abort(400, messages=[["warning",
-                                      SegSid.miss_l_err.format(i)]])
+                abort(400, messages=[["warning", SegSid.miss_l_err.format(i)]])
             if not postpos.get("tag", False):
-                abort(400, messages=[["warning",
-                                      SegSid.miss_t_err.format(i)]])
+                abort(400, messages=[["warning", SegSid.miss_t_err.format(i)]])
             if dbpos["word"] == postpos["word"]:
                 # only save flag if it's True (it might be present, but set to
                 # False)

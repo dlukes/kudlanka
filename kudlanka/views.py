@@ -80,9 +80,15 @@ def root():
 @app.route(k("/list/"))
 @login_required
 def list():
+    # admin users don't have their own segments, so they don't have a list view
+    if current_user.has_role("admin"):
+        return redirect(url_for("admin"), 303)
     uid = session["user_id"]
     user = User.objects(id=uid).first()
     segs = []
+    # FIXME: refactor this to preferably hit the db only once in order to
+    # retrieve a user's segments (hitting it repeatedly for each segment is
+    # a huge performance killer)
     for i, sid in enumerate(user.segs):
         seg = Seg.objects(sid=sid).first()
         utt = []
@@ -92,7 +98,7 @@ def list():
             if pos.get("flags", {}).get(uid, False):
                 flag_seg = True
         utt = " ".join(utt)
-        segs.append(dict(i=i + 1, sid=seg.sid, oral=seg.oral, utt=utt,
+        segs.append(dict(i=i + 1, sid=seg.sid, corpus=seg.corpus, utt=utt,
                          flag_seg=flag_seg))
     total = 0
     batches = []

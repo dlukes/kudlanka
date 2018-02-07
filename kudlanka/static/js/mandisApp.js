@@ -27,7 +27,7 @@ app.directive("segProgress", ["$timeout", function ($timeout) {
   return {
     link: function ($scope, element, attrs) {
       $scope.$on("uttManipulated", function () {
-        // You might need this timeout to be sure its run after DOM render.
+        // You might need this timeout to be sure it's run after DOM render.
         $timeout(function () {
           $scope.pristine = $("select.ng-pristine").length;
           $scope.dirty = $("select.ng-dirty").length;

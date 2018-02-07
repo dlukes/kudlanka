@@ -10,12 +10,12 @@ import json
 from lxml import etree
 
 
-def doc_generator(vert_file):
-    """Yield input vertical one doc (as JSON) at a time."""
+def doc_generator(vert_file, doc_struct):
+    """Yield input vertical one doc at a time."""
     doc = ""
     for line in fileinput.input(vert_file):
         doc += line
-        if line.startswith("</doc"):
+        if line.startswith("</" + doc_struct):
             try:
                 doc = valid_xml(doc)
                 yield etree.fromstring(doc)
@@ -39,7 +39,7 @@ def valid_xml(doc):
     return doc
 
 
-def xml2dict(xml):
+def xml2dict(xml, corpus, attr):
 
     def nonamb_pos(tab_sep):
         if len(tab_sep) > 1:
@@ -57,10 +57,16 @@ def xml2dict(xml):
     # a global index counter for all seg elements in xml; incremented below
     idx = 0
     id = xml.attrib.get("id", "ID_MISSING")
-    oral = xml.attrib.get("oral", "ORAL_MISSING")
+    if corpus is None:
+        corpus = xml.attrib.get(attr, None)
+        if corpus is None:
+            logging.warning("Unable to get corpus info, setting to "
+                            "``unknown``. Corpus + SID identification might "
+                            "not be unique as a result.")
+            corpus = "unknown"
     doc = {
         "id": id,
-        "oral": oral,
+        "corpus": corpus,
         "segs": []
     }
     for sp in xml:
@@ -72,7 +78,7 @@ def xml2dict(xml):
             seg_dict = {
                 "num": num,
                 "sid": id + "_" + str(idx),
-                "oral": oral,
+                "corpus": corpus,
                 "utt": utterance,
                 "users": [],
                 "users_size": 0,
@@ -114,15 +120,23 @@ def parse_argv(argv):
     parser.add_argument("vertical", help="corpus in vertical format, or - for "
                         "STDIN", nargs="?", default="-")
     parser.add_argument("-l", "--limit", help="process up to N documents and "
-                        "exit", type=int, default=None)
+                        "exit", type=int)
+    parser.add_argument("-c", "--corpus", type=str,
+                        help="name of imported corpus (overrides --attr)")
+    parser.add_argument("-a", "--attr", type=str, default="oral",
+                        help="--doc attribute from which to infer corpus name "
+                        "(overridden by --corpus)")
+    parser.add_argument("-d", "--doc", type=str, default="doc",
+                        help="name of top-level structure in vertical whose "
+                        "immediate children will constitute segs")
     logging.basicConfig(level=logging.INFO)
     return parser.parse_args(argv)
 
 
 def main(argv=None):
     args = parse_argv(argv)
-    for i, doc in enumerate(doc_generator(args.vertical)):
-        doc = xml2dict(doc)
+    for i, doc in enumerate(doc_generator(args.vertical, args.doc)):
+        doc = xml2dict(doc, args.corpus, args.attr)
         id = doc["id"]
         for seg in doc["segs"]:
             print(json.dumps(seg))
