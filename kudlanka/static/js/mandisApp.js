@@ -73,6 +73,13 @@ app.controller("mandisCtrl", function($scope, $http, $location) {
         $scope.messages = data.messages;
         $scope.num = data.num;
         $scope.utt = data.utt;
+        // initialize lemma and tags arrays
+        for (var i in $scope.utt) {
+          if ($scope.utt[i].pool) {
+            $scope.utt[i].lemmas = [];
+            $scope.utt[i].tags = [];
+          }
+        }
         $scope.uttManipulated();
         $scope.sid = data.sid;
         $scope.user = data.user;

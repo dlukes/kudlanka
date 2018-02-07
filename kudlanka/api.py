@@ -43,7 +43,6 @@ def abort(status_code, **kwargs):
 
 
 class SegSid(Resource):
-    err = _("Access forbidden.")
     edit_err = _("You are not allowed to edit this segment.")
     len_err = _(
         "The length of the segment being inserted does not match the length "
@@ -81,6 +80,8 @@ class SegSid(Resource):
             abort(403, messages=[["danger", SegSid.edit_err.format()]])
         if not len(seg["utt"]) == len(utt):
             abort(400, messages=[["danger", SegSid.len_err.format(sid)]])
+        # iterate over positions in both db and post data, perform checks,
+        # modify positions in db representation, then commit it
         for i, dbpos, postpos in zip(range(1, len(seg["utt"]) + 1),
                                      seg["utt"],
                                      utt):
@@ -105,14 +106,18 @@ class SegSid(Resource):
                     dbpos.setdefault("notes", {}).pop(uid, None)
                 if "pool" not in dbpos:
                     continue
-                elif postpos["lemma"] in dbpos["pool"]:
-                    dbpos.setdefault("lemmas", {})[uid] = postpos["lemma"]
-                else:
-                    abort(400, messages=[["danger", SegSid.err.format()]])
-                if postpos["tag"] in dbpos["pool"].get(postpos["lemma"], {}):
-                    dbpos.setdefault("tags", {})[uid] = postpos["tag"]
-                else:
-                    abort(400, messages=[["danger", SegSid.err.format()]])
+                for lemma in postpos["lemmas"]:
+                    custom = lemma not in dbpos["pool"]
+                    lemma = dict(value=lemma, custom=custom)
+                    uid2lemmas = dbpos.setdefault("lemmas", {})
+                    lemmas = uid2lemmas.setdefault(uid, [])
+                    lemmas.append(lemma)
+                for tag in postpos["tags"]:
+                    custom = tag not in dbpos["pool"].get(postpos["lemma"], {})
+                    tag = dict(value=tag, custom=custom)
+                    uid2tags = dbpos.setdefault("tags", {})
+                    tags = uid2tags.setdefault(uid, [])
+                    tags.append(tag)
             else:
                 error = SegSid.word_err.format(postpos["word"], dbpos["word"], i, sid)
                 abort(400, messages=[["danger", error]])

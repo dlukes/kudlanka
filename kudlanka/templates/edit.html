@@ -90,10 +90,19 @@
                     <td>{[ pos.word ]}</td>
 
                     <!-- lemma column -->
-                    <td ng-if="numOfKeys(pos.pool) > 1" class="bg-info">
-                      <select ng-model="pos.lemma" ng-change="uttManipulated()"
-                              ng-options="lemma as lemma for (lemma, tags) in pos.pool">
-                      </select>
+                    <td ng-if="numOfKeys(pos.pool) > 1">
+                      <div>
+                        <select class="bg-info" ng-model="pos.lemmas[0]" ng-change="uttManipulated()"
+                                ng-options="lemma as lemma for (lemma, tags) in pos.pool">
+                        </select>
+                      </div>
+                      <!-- and this is what each additional inserted lemma will look like -->
+                      <div>
+                        <select class="bg-info" ng-model="pos.lemmas[1]" ng-change="uttManipulated()"
+                                ng-options="lemma as lemma for (lemma, tags) in pos.pool">
+                        </select>
+                      </div>
+                      <!-- --- -->
                     </td>
                     <td ng-if="numOfKeys(pos.pool) == 1">
                       {[ pos.lemma = firstKey(pos.pool); pos.lemma ]}
@@ -103,20 +112,43 @@
                     </td>
 
                     <!-- tag column -->
-                    <td ng-if="pos.pool[pos.lemma].length > 1" class="tag bg-info">
-                      <select ng-model="pos.tag"
-                              ng-change="$parent.$parent.helpTag = pos.tag; uttManipulated()"
-                              ng-options="tag | colorTag for tag in pos.pool[pos.lemma]">
-                      </select>
-                    </td>
-                    <td ng-if="pos.pool[pos.lemma].length == 1" class="tag">
-                      {[ pos.tag = pos.pool[pos.lemma][0]; pos.tag ]}
-                    </td>
-                    <td ng-if="!pos.pool" class="tag">
-                      {[ pos.tag ]}
-                    </td>
-                    <td ng-if="!pos.lemma">
-                      <em>&mdash; {{ _("pick lemma first") }} &mdash;</em>
+                    <td>
+                      <div>
+                        <select class="tag bg-info"
+                                ng-if="pos.pool[pos.lemmas[0]].length > 1"
+                                ng-model="pos.tags[0]"
+                                ng-change="$parent.$parent.helpTag = pos.tags[0]; uttManipulated()"
+                                ng-options="tag | colorTag for tag in pos.pool[pos.lemmas[0]]">
+                        </select>
+                        <span ng-if="pos.pool[pos.lemmas[0]].length == 1" class="tag">
+                          {[ pos.tags[0] = pos.pool[pos.lemmas[0]][0]; pos.tag ]}
+                        </span>
+                        <span ng-if="!pos.pool" class="tag">
+                          {[ pos.tag ]}
+                        </span>
+                        <em ng-if="pos.pool && !pos.lemmas[0]">
+                          &mdash; {{ _("pick lemma first") }} &mdash;
+                        </em>
+                      </div>
+                      <!-- and this is what each additional inserted tag will look like -->
+                      <div>
+                        <select class="tag bg-info"
+                                ng-if="pos.pool[pos.lemmas[1]].length > 1"
+                                ng-model="pos.tags[1]"
+                                ng-change="$parent.$parent.helpTag = pos.tags[1]; uttManipulated()"
+                                ng-options="tag | colorTag for tag in pos.pool[pos.lemmas[1]]">
+                        </select>
+                        <span ng-if="pos.pool[pos.lemmas[1]].length == 1" class="tag">
+                          {[ pos.tags[1] = pos.pool[pos.lemmas[1]][0]; pos.tag ]}
+                        </span>
+                        <span ng-if="!pos.pool" class="tag">
+                          {[ pos.tag ]}
+                        </span>
+                        <em ng-if="pos.pool && !pos.lemmas[1]">
+                          &mdash; {{ _("pick lemma first") }} &mdash;
+                        </em>
+                      </div>
+                      <!-- --- -->
                     </td>
 
                     <!-- flag column -->
