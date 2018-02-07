@@ -1,4 +1,4 @@
-from flask.ext.babel import lazy_gettext as _
+from flask_babel import lazy_gettext as _
 
 # a hack to enable mounting the app at an arbitrary URL prefix
 KROOT = ""

@@ -1,8 +1,8 @@
-from flask.ext.security import Security
-from flask.ext.security.forms import LoginForm, ChangePasswordForm, EqualTo, \
+from flask_security import Security
+from flask_security.forms import LoginForm, ChangePasswordForm, EqualTo, \
     Required, Length
-from flask.ext.wtf import Form
-from flask.ext.babel import lazy_gettext as _
+from flask_wtf import Form
+from flask_babel import lazy_gettext as _
 
 from kudlanka import app
 from .models import User, user_ds

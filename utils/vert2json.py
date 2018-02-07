@@ -144,7 +144,9 @@ def main(argv=None):
         if args.limit is not None and i + 1 >= args.limit:
             break
     logging.info("You can now import the data with `sort -R data.json | "
-                 "mongoimport -d database -c collection`.")
+                 "mongoimport -d <database> -c <collection>`. <collection> "
+                 "should be `segs` and unless you've modified the MONGODB_DB "
+                 "config value, <database> should be `ktest`.")
     return 0
 
 

@@ -1,8 +1,8 @@
 from flask import abort, flash, g, redirect, render_template, request, \
     session, url_for
-from flask.ext.security import login_required, current_user, \
+from flask_security import login_required, current_user, \
     url_for_security, roles_required
-from flask.ext.babel import lazy_gettext as _
+from flask_babel import lazy_gettext as _
 
 from kudlanka import app
 from .babel import get_locale
@@ -71,7 +71,7 @@ def before_request():
 def root():
     if current_user.has_role("admin"):
         return redirect(url_for("admin"), 303)
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for("edit"), 303)
     else:
         return redirect(url_for_security("login"), 303)

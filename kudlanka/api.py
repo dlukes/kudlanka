@@ -1,8 +1,8 @@
 from flask import *
-from flask.ext.restful import Resource, Api
-import flask.ext.restful as rest
-from flask.ext.security import login_required
-from flask.ext.babel import lazy_gettext as _
+from flask_restful import Resource, Api
+import flask_restful as rest
+from flask_security import login_required
+from flask_babel import lazy_gettext as _
 
 from kudlanka import app
 from kudlanka.config import k

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask.json import JSONEncoder
-from flask.ext.markdown import Markdown
-from flask.ext.babel import lazy_gettext as _
+from flaskext.markdown import Markdown
+from flask_babel import lazy_gettext as _
 
 from .config import k
 

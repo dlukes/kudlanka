@@ -14,9 +14,9 @@ First of all, you need access to a MongoDB instance. Then:
 # `pip3`
 git clone <this_repository>
 cd kudlanka
-pip install -r requirements.txt
+pipenv install --dev
 bower install
-inv pybcompile jscompile
+pipenv run inv pybcompile jscompile
 ```
 
 ## Configuration
@@ -40,7 +40,7 @@ your liking.
 Convert a corpus with morphological analysis in the vertical format via
 `utils/vert2json.py`. Import it into MongoDB (`vert2json.py` will give a hint as
 to how to do that). At this point, the app itself is ready for a spin with
-`python runserver.py`.
+`pipenv run python runserver.py`.
 
 ## User registration
 

@@ -56,7 +56,7 @@ def pybcompile():
 
     """
     run("pybabel compile -d kudlanka/translations")
-    print("Remember that .js files need to be taken care of manually!")
+    print("pybcompile: Remember that .js files need to be taken care of manually!")
 
 
 @task
