@@ -15,6 +15,7 @@ flask-restful = "*"
 flask-security = "==1.*"
 flask-wtf = "==0.13.*"
 gitpython = "*"
+gunicorn = "*"
 
 
 [dev-packages]

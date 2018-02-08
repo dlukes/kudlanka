@@ -1,7 +1,7 @@
 from flask_babel import lazy_gettext as _
 
 # a hack to enable mounting the app at an arbitrary URL prefix
-KROOT = ""
+KROOT = "/kudlanka"
 
 
 def k(url):
@@ -9,7 +9,7 @@ def k(url):
 
 
 # MongoDB config
-MONGODB_DB = "ktest"
+MONGODB_DB = "kudlanka"
 MONGODB_HOST = "localhost"
 MONGODB_PORT = 27017
 
