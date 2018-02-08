@@ -7,108 +7,78 @@ import fileinput
 
 import re
 import json
-from lxml import etree
+from collections import defaultdict
 
 
-def doc_generator(vert_file, doc_struct):
-    """Yield input vertical one doc at a time."""
-    doc = ""
-    for line in fileinput.input(vert_file):
-        doc += line
-        if line.startswith("</" + doc_struct):
-            try:
-                doc = valid_xml(doc)
-                yield etree.fromstring(doc)
-            except etree.XMLSyntaxError as e:
-                dump = "__dump__.xml"
-                with(open(dump, "w")) as fh:
-                    fh.write(doc)
-                logging.error("An XMLSyntaxError occurred while processing "
-                              "a document. It has been dumped to {} for "
-                              "inspection.".format(dump))
-                logging.error(e)
-                sys.exit(1)
-            finally:
-                doc = ""
+def getsattr(sattr, line):
+    """Get value of structural attribute from vertical line."""
+    return re.search(r' {}="(.*?)"'.format(sattr), line).group(1)
 
 
-def valid_xml(doc):
-    """Transform vertical to valid XML."""
-    doc = re.sub("&", "&amp;", doc)
-    doc = re.sub("<(\d+)>", "&lt;\\1&gt;", doc)
-    return doc
-
-
-def xml2dict(xml, corpus, attr):
-
-    def nonamb_pos(tab_sep):
-        if len(tab_sep) > 1:
-            # more than one lemma
-            return False
-        elif len(tab_sep[0].split()) > 2:
-            # more than one tag for (unique) lemma
-            return False
-        else:
-            return True
-
-    def fix_lemmas_with_spaces(tab_sep):
-        return [re.sub("^\(.+?\)", "META", lemtag) for lemtag in tab_sep]
-
-    # a global index counter for all seg elements in xml; incremented below
-    idx = 0
-    id = xml.attrib.get("id", "ID_MISSING")
-    if corpus is None:
-        corpus = xml.attrib.get(attr, None)
-        if corpus is None:
-            logging.warning("Unable to get corpus info, setting to "
-                            "``unknown``. Corpus + SID identification might "
-                            "not be unique as a result.")
-            corpus = "unknown"
-    doc = {
-        "id": id,
+def new_seg(corpus, doc_id, seg_idx, seg_label):
+    # even values which do not change (users, users_size) need to be
+    # set in advance, because we will be querying them
+    return {
+        "num": seg_label,
+        "sid": doc_id + "_" + str(seg_idx),
         "corpus": corpus,
-        "segs": []
+        "utt": [],
+        "users": [],
+        "users_size": 0,
+        "ambiguous": False
     }
-    for sp in xml:
-        num = sp.attrib.get("num", "NUM_MISSING")
-        for seg in sp:
-            utterance = []
-            # even values which do not change (users, users_size) need to be
-            # set in advance, because we will be querying them
-            seg_dict = {
-                "num": num,
-                "sid": id + "_" + str(idx),
-                "corpus": corpus,
-                "utt": utterance,
-                "users": [],
-                "users_size": 0,
-                "ambiguous": False
-            }
-            doc["segs"].append(seg_dict)
-            idx += 1
-            for pos in seg.text.strip().split("\n"):
-                tab_sep = pos.split("\t")
-                word = tab_sep.pop(0)
-                tab_sep = fix_lemmas_with_spaces(tab_sep)
-                if nonamb_pos(tab_sep):
-                    lemma, tag = tab_sep[0].split()
-                    utterance.append({
-                        "word": word,
-                        "lemma": lemma,
-                        "tag": tag
-                    })
-                else:
-                    seg_dict["ambiguous"] = True
-                    pool = {}
-                    utterance.append({
-                        "word": word,
-                        "pool": pool
-                    })
-                    for lemtag in tab_sep:
-                        space_sep = lemtag.split()
-                        lemma, tags = space_sep[0], space_sep[1:]
-                        pool[lemma] = tags
-    return doc
+
+
+def vert2segs(vert_file, doc_struct: str, seg_struct: str,
+              corpus_name: str, corpus_attr: str, seg_label_attr: str, limit: int):
+    """Extract segments from vertical."""
+    doc_count = 0
+    for line in fileinput.input(vert_file):
+        line = line.strip("\r\n")
+        if line.startswith("<" + doc_struct) and "\t" not in line:
+            doc_count += 1
+            # a global index counter for all seg elements in doc; incremented below
+            seg_idx = 0
+            doc_id = getsattr("id", line)
+            if corpus_name is None:
+                corpus_name = getsattr(corpus_attr, line)
+                if corpus_name is None:
+                    logging.warning("Unable to get corpus info, setting to `unknown`. Corpus + SID "
+                                    "identification might not be unique as a result.")
+                    corpus_name = "unknown"
+        elif line.startswith("</" + doc_struct) and "\t" not in line:
+            logging.info("Processed {}.".format(doc_id))
+            if limit is not None and doc_count == limit:
+                return
+        elif line.startswith("<" + seg_struct) and "\t" not in line:
+            seg_label = getsattr(seg_label_attr, line)
+            seg = new_seg(corpus_name, doc_id, seg_idx, seg_label)
+            positions = seg["utt"]
+            seg_idx += 1
+        elif line.startswith("</" + seg_struct) and "\t" not in line:
+            yield seg
+        elif "\t" in line:
+            tab_sep = line.split("\t")
+            word = tab_sep.pop(0)
+            # just one lemma + tag tab-separated pair -> non-ambiguous position
+            if len(tab_sep) == 2:
+                lemma, tag = tab_sep
+                positions.append({
+                    "word": word,
+                    "lemma": lemma,
+                    "tag": tag
+                })
+            else:
+                seg["ambiguous"] = True
+                pool = defaultdict(list)
+                positions.append({
+                    "word": word,
+                    "pool": pool
+                })
+                tab_sep = iter(tab_sep)
+                for lemma in tab_sep:
+                    tag = next(tab_sep)
+                    pool[lemma].append(tag)
 
 
 def parse_argv(argv):
@@ -118,35 +88,39 @@ def parse_argv(argv):
         description="Prepare vertical for import "
         "into MongoDB for the Kudlanka manual desambiguation webapp.")
     parser.add_argument("vertical", help="corpus in vertical format, or - for "
-                        "STDIN", nargs="?", default="-")
-    parser.add_argument("-l", "--limit", help="process up to N documents and "
-                        "exit", type=int)
-    parser.add_argument("-c", "--corpus", type=str,
-                        help="name of imported corpus (overrides --attr)")
-    parser.add_argument("-a", "--attr", type=str, default="oral",
+                        "STDIN", nargs="+")
+    parser.add_argument("-m", "--max", type=int,
+                        help="process up to N documents and exit")
+    parser.add_argument("-d", "--doc-struct", type=str, default="doc",
+                        help="name of top-level structure in vertical")
+    parser.add_argument("-c", "--corpus-attr", type=str,
                         help="--doc attribute from which to infer corpus name "
                         "(overridden by --corpus)")
-    parser.add_argument("-d", "--doc", type=str, default="doc",
-                        help="name of top-level structure in vertical whose "
-                        "immediate children will constitute segs")
+    parser.add_argument("-C", "--corpus-name", type=str,
+                        help="name of imported corpus (overrides --attr)")
+    parser.add_argument("-s", "--seg-struct", type=str,
+                        help="name of structure in vertical that will constitute segments")
+    parser.add_argument("-l", "--label-attr", type=str,
+                        help="--seg attribute used to label it in Kudlanka")
     logging.basicConfig(level=logging.INFO)
     return parser.parse_args(argv)
 
 
 def main(argv=None):
     args = parse_argv(argv)
-    for i, doc in enumerate(doc_generator(args.vertical, args.doc)):
-        doc = xml2dict(doc, args.corpus, args.attr)
-        id = doc["id"]
-        for seg in doc["segs"]:
+    try:
+        for seg in vert2segs(args.vertical, args.doc_struct, args.seg_struct, args.corpus_name,
+                             args.corpus_attr, args.label_attr, args.max):
             print(json.dumps(seg))
-        logging.info("Processed {}.".format(id))
-        if args.limit is not None and i + 1 >= args.limit:
-            break
-    logging.info("You can now import the data with `sort -R data.json | "
-                 "mongoimport -d <database> -c <collection>`. <collection> "
-                 "should be `segs` and unless you've modified the MONGODB_DB "
-                 "config value, <database> should be `ktest`.")
+    except Exception as e:
+        logging.fatal("An exception occurred which may be due to insufficient information about "
+                      "the segment extraction procedure. Specify more information via options (see "
+                      "-h for the full list) and retry.")
+        raise e
+    logging.info("You can now import the data with `sort -R data.json | mongoimport -d <database> "
+                 "-c <collection>`. <collection> should be `segs` and <database> should correspond "
+                 "to the MONGODB_DB config value. Use --drop if the `segs` collection should be "
+                 "dropped first.")
     return 0
 
 
