@@ -42,19 +42,19 @@
           </div>
           <div class="panel-body">
             <p ng-repeat="seg in prev">
-              <code>spk{[ seg.num ]}:</code> <span ng-repeat="pos in seg.utt">{[ pos.word ]} </span>
+              <code>{[ seg.num ]}:</code> <span ng-repeat="pos in seg.utt">{[ pos.word ]} </span>
             </p>
             <p>
               <button ng-click="getPrev()" type="button" class="btn btn-success btn-xs">
                 <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
               </button>
-              <code>spk{[ num ]}:</code> <span ng-repeat="pos in utt">{[ pos.word ]} </span>
+              <code>{[ num ]}:</code> <span ng-repeat="pos in utt">{[ pos.word ]} </span>
               <button ng-click="getNext()" type="button" class="btn btn-success btn-xs">
                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
               </button>
             </p>
             <p ng-repeat="seg in next">
-              <code>spk{[ seg.num ]}:</code> <span ng-repeat="pos in seg.utt">{[ pos.word ]} </span>
+              <code>{[ seg.num ]}:</code> <span ng-repeat="pos in seg.utt">{[ pos.word ]} </span>
             </p>
           </div>
         </div>
