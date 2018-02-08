@@ -8,16 +8,16 @@ name = "pypi"
 [packages]
 
 flask = "*"
-flask-babel = "*"
+flask-babel = "==0.9.*"
 flask-markdown = "*"
 flask-mongoengine = "*"
 flask-restful = "*"
-flask-security = "*"
-flask-wtf = "*"
+flask-security = "==1.*"
+flask-wtf = "==0.13.*"
 gitpython = "*"
 
 
 [dev-packages]
 
 invoke = "==0.12.*"
-lxml = "*"
+sortedcontainers = "*"
