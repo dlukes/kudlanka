@@ -40,7 +40,7 @@ def get_segs(users=None):
 def csv_output(users=None):
     import csv
     out = csv.writer(sys.stdout, delimiter="\t")
-    fields = ["uid", "sid", "idx", "word", "lemma", "tag", "flag", "note"]
+    fields = ["uid", "sid", "seg_length", "idx", "word", "lemma", "tag", "flag", "note"]
     out.writerow(fields)
     for seg in get_segs(users):
         for idx, pos in enumerate(seg.utt):
@@ -51,7 +51,7 @@ def csv_output(users=None):
                     by_user[uid][field[:-1]] = value
                     by_user[uid]["word"] = word
             for uid, fields in by_user.items():
-                out.writerow([uid2username(uid), seg.sid, idx, fields["word"],
+                out.writerow([uid2username(uid), seg.sid, len(seg.utt), idx, fields["word"],
                               fields.get("lemma", None), fields.get("tag", None),
                               fields.get("flag", None), fields.get("note", None)])
 
