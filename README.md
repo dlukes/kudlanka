@@ -38,9 +38,10 @@ your liking.
 ## Data import
 
 Convert a corpus with morphological analysis in the vertical format via
-`utils/vert2json.py`. Import it into MongoDB (`vert2json.py` will give a hint as
-to how to do that). At this point, the app itself is ready for a spin with
-`pipenv run python runserver.py`.
+`utils/vert2json.py` (run it with `-h` to get a sense of the options and the
+expected format). Import the result into MongoDB (`vert2json.py` will give a
+hint as to how to do that). At this point, the app itself is ready for a spin
+with `pipenv run python runserver.py`.
 
 ## User registration
 

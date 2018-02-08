@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+r"""Prepare vertical for import into MongoDB for the Kudlanka manual desambiguation webapp.
+
+The expected format of positions in the morphologically analyzed vertical is
+"<word>\t<lemma>\t<tag>\t<lemma>\t<tag>...".
+
+"""
+
 import sys
 import argparse
 import logging
@@ -84,9 +91,7 @@ def vert2segs(vert_file, doc_struct: str, seg_struct: str,
 def parse_argv(argv):
     if argv is None:
         argv = sys.argv[1:]
-    parser = argparse.ArgumentParser(
-        description="Prepare vertical for import "
-        "into MongoDB for the Kudlanka manual desambiguation webapp.")
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("vertical", help="corpus in vertical format, or - for "
                         "STDIN", nargs="+")
     parser.add_argument("-m", "--max", type=int,
